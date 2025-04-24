@@ -1,0 +1,144 @@
+{
+  "2025-04-09": {
+    "EDA101": {
+      "23BB1A3202": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:32.337636",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3201": {
+        "status": "late",
+        "timestamp": "2025-04-09T19:47:06.765088",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3203": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:32.436748",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3204": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:32.572686",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3205": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:32.740634",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3206": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:41.037047",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3207": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:41.638104",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3208": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:43.881365",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3211": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:44.325112",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3210": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:38:44.336372",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      }
+    },
+    "EBOX101": {
+      "23BB1A3201": {
+        "status": "present",
+        "timestamp": "2025-04-09T19:52:46.848161",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "DSK001"
+      }
+    }
+  },
+  "2025-04-10": {
+    "CSEDA101": {
+      "23BB1A3201": {
+        "status": "present",
+        "timestamp": "2025-04-10T10:31:39.855321",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "DSK001"
+      }
+    }
+  },
+  "2025-04-21": {
+    "OS101": {
+      "23BB1A3201": {
+        "status": "present",
+        "timestamp": "2025-04-21T15:01:13.957236",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3202": {
+        "status": "present",
+        "timestamp": "2025-04-21T15:01:17.468107",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3203": {
+        "status": "present",
+        "timestamp": "2025-04-21T15:01:18.602347",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      }
+    },
+    "DAA101": {
+      "23BB1A3264": {
+        "status": "late",
+        "timestamp": "2025-04-21T15:28:21.897550",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3263": {
+        "status": "present",
+        "timestamp": "2025-04-21T15:28:26.798752",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      },
+      "23BB1A3262": {
+        "status": "absent",
+        "timestamp": "2025-04-21T15:28:27.706981",
+        "class": "CSBS",
+        "section": "A",
+        "markedBy": "unknown"
+      }
+    }
+  }
+}

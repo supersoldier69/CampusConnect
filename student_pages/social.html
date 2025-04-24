@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect</title>
+    <link rel="stylesheet" href="styles4.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .social-container {
+            background-color: #1a2b47;
+            min-height: 100vh;
+            padding: 2rem;
+            color: white;
+        }
+
+        .social-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .social-main {
+            display: grid;
+            grid-template-columns: 250px 1fr 350px;
+            gap: 2rem;
+        }
+
+        .social-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background-color: rgba(17, 92, 191, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .social-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .social-nav a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .social-nav a.active {
+            background-color: #ff8c00;
+        }
+
+        .social-nav a:hover {
+            background-color: rgba(255, 140, 0, 0.2);
+        }
+
+        .profile {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .social-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .post {
+            background-color: rgba(17, 92, 191, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-content {
+            margin-bottom: 1rem;
+        }
+
+        .post-media {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .post-form {
+            background-color: rgba(17, 92, 191, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .post-input {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .post-actions button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .post-actions button:hover {
+            background-color: rgba(255, 140, 0, 0.2);
+        }
+
+        .video-card {
+            background-color: rgba(17, 92, 191, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+
+        .video-info {
+            padding: 1rem;
+        }
+
+        .video-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-meta {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="social-container">
+        <header class="social-header">
+            <h1>Campus Connect</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Search posts, people, or topics...">
+            </div>
+        </header>
+
+        <main class="social-main">
+            <!-- Left Navigation -->
+            <nav class="social-nav">
+                <a href="#" class="active">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="#">
+                    <i class="fas fa-compass"></i>
+                    Explore
+                </a>
+                <a href="#">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="#">
+                    <i class="fas fa-envelope"></i>
+                    Messages
+                </a>
+                <a href="#">
+                    <i class="fas fa-bookmark"></i>
+                    Bookmarks
+                </a>
+                <a href="#">
+                    <i class="fas fa-list"></i>
+                    Lists
+                </a>
+                <a href="#">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <a href="#">
+                    <i class="fas fa-ellipsis-h"></i>
+                    More
+                </a>
+                <div class="profile">
+                    <div class="profile-pic">
+                        <img src="student.jpg" alt="Profile Picture">
+                    </div>
+                    <div>
+                        <h3>Student Name</h3>
+                        <p>@username</p>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Feed -->
+            <section class="social-feed">
+                <div class="post">
+                    <div class="post-header">
+                        <img src="student.jpg" alt="Profile" class="post-avatar">
+                        <div>
+                            <h3>Student Name</h3>
+                            <p>@username · 2h ago</p>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Just finished my Data Structures assignment! 🎉 #Coding #StudentLife</p>
+                    </div>
+                    <img src="coding.jpg" alt="Post Media" class="post-media">
+                    <div class="post-stats">
+                        <span><i class="far fa-comment"></i> 24</span>
+                        <span><i class="fas fa-retweet"></i> 12</span>
+                        <span><i class="far fa-heart"></i> 156</span>
+                        <span><i class="far fa-share-square"></i></span>
+                    </div>
+                </div>
+
+                <div class="post">
+                    <div class="post-header">
+                        <img src="student.jpg" alt="Profile" class="post-avatar">
+                        <div>
+                            <h3>Student Name</h3>
+                            <p>@username · 4h ago</p>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Check out my latest study vlog! 📚 #StudyWithMe</p>
+                    </div>
+                    <video controls class="post-media">
+                        <source src="study-vlog.mp4" type="video/mp4">
+                    </video>
+                    <div class="post-stats">
+                        <span><i class="far fa-comment"></i> 45</span>
+                        <span><i class="fas fa-retweet"></i> 23</span>
+                        <span><i class="far fa-heart"></i> 289</span>
+                        <span><i class="far fa-share-square"></i></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Sidebar -->
+            <aside class="social-sidebar">
+                <div class="post-form">
+                    <h2>What's happening?</h2>
+                    <textarea class="post-input" placeholder="Share your thoughts..."></textarea>
+                    <div class="post-actions">
+                        <button><i class="fas fa-image"></i> Media</button>
+                        <button><i class="fas fa-video"></i> Video</button>
+                        <button><i class="fas fa-poll"></i> Poll</button>
+                        <button class="btn btn-primary">Post</button>
+                    </div>
+                </div>
+
+                <h2>Recommended Videos</h2>
+                <div class="video-card">
+                    <img src="video1.jpg" alt="Video Thumbnail" class="video-thumbnail">
+                    <div class="video-info">
+                        <h3 class="video-title">How to Ace Your Exams</h3>
+                        <p class="video-meta">Study Tips · 250K views</p>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <img src="video2.jpg" alt="Video Thumbnail" class="video-thumbnail">
+                    <div class="video-info">
+                        <h3 class="video-title">Campus Tour 2024</h3>
+                        <p class="video-meta">Campus Life · 180K views</p>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <img src="video3.jpg" alt="Video Thumbnail" class="video-thumbnail">
+                    <div class="video-info">
+                        <h3 class="video-title">Study With Me</h3>
+                        <p class="video-meta">Study Tips · 150K views</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script>
+        // Function to handle post submission
+        document.querySelector('.post-form button.btn-primary').addEventListener('click', () => {
+            const postInput = document.querySelector('.post-input');
+            if (postInput.value.trim()) {
+                // Here you would typically send the post to your backend
+                console.log('Posting:', postInput.value);
+                postInput.value = '';
+            }
+        });
+
+        // Function to handle media upload
+        document.querySelector('.post-actions button:nth-child(1)').addEventListener('click', () => {
+            // Here you would typically open a file picker
+            console.log('Opening media picker');
+        });
+
+        // Function to handle video upload
+        document.querySelector('.post-actions button:nth-child(2)').addEventListener('click', () => {
+            // Here you would typically open a video picker
+            console.log('Opening video picker');
+        });
+
+        // Function to handle poll creation
+        document.querySelector('.post-actions button:nth-child(3)').addEventListener('click', () => {
+            // Here you would typically open a poll creation modal
+            console.log('Opening poll creator');
+        });
+    </script>
+    <script src="credentials.js"></script>
+    <script src="assets/js/click-spark.js"></script>
+</body>
+</html> 

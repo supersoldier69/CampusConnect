@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Results Summary</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f7fb;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e7b;
+            height: 100vh;
+            padding: 20px;
+            color: white;
+            position: fixed;
+            transition: transform 0.3s ease;
+            transform: translateX(-250px);
+        }
+
+        .sidebar.visible {
+            transform: translateX(0);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 0;
+            padding: 30px;
+            width: 100%;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.sidebar-visible {
+            margin-left: 250px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e7b;
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-info {
+            text-align: right;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Results Section */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th, .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+
+        .results-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .grade {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .grade-a {
+            background-color: #e6f4ea;
+            color: #34a853;
+        }
+
+        .grade-b {
+            background-color: #e8f0fe;
+            color: #4285f4;
+        }
+
+        .grade-c {
+            background-color: #fef7e0;
+            color: #fbbc05;
+        }
+
+        .grade-d {
+            background-color: #fce8e6;
+            color: #ea4335;
+        }
+
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+            padding: 12px;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <span class="material-icons">school</span>
+            CampusConnect
+        </div>
+        <div class="nav-item" onclick="navigateTo('dashboard.html')">
+            <span class="material-icons">dashboard</span>
+            Dashboard
+        </div>
+        <div class="nav-item" onclick="navigateTo('schedule.html')">
+            <span class="material-icons">schedule</span>
+            Schedule
+        </div>
+        <div class="nav-item" onclick="navigateTo('courses.html')">
+            <span class="material-icons">menu_book</span>
+            Courses
+        </div>
+        <div class="nav-item active" onclick="navigateTo('results.html')">
+            <span class="material-icons">assessment</span>
+            Results Summary
+        </div>
+        <div class="nav-item" onclick="navigateTo('exams.html')">
+            <span class="material-icons">event</span>
+            Upcoming Exams
+        </div>
+        <div class="nav-item" onclick="navigateTo('attendance.html')">
+            <span class="material-icons">how_to_reg</span>
+            Attendance
+        </div>
+        <div class="nav-item" onclick="navigateTo('assignments.html')">
+            <span class="material-icons">assignment</span>
+            Assignments
+        </div>
+        <div class="nav-item" onclick="navigateTo('settings.html')">
+            <span class="material-icons">settings</span>
+            Settings
+        </div>
+        <button class="logout-btn" onclick="logout()">
+            <span class="material-icons">logout</span>
+            Logout
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="header">
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                <span class="material-icons">menu</span>
+                <span style="margin-left: 10px;">CampusConnect</span>
+            </div>
+            <h1 class="page-title">Results Summary</h1>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <div id="student-name">Welcome back, <span id="username-display"></span></div>
+                    <div id="student-id" style="color: #666; font-size: 14px;"></div>
+                </div>
+                <div class="avatar" id="avatar-display"></div>
+            </div>
+        </div>
+
+        <!-- Results Summary Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Semester Results</h2>
+            </div>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Internal Marks</th>
+                        <th>External Marks</th>
+                        <th>Total</th>
+                        <th>Percentage</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Advanced Mathematics</td>
+                        <td>45/50</td>
+                        <td>85/100</td>
+                        <td>130/150</td>
+                        <td>87%</td>
+                        <td><span class="grade grade-a">A</span></td>
+                    </tr>
+                    <tr>
+                        <td>Computer Science</td>
+                        <td>48/50</td>
+                        <td>92/100</td>
+                        <td>140/150</td>
+                        <td>93%</td>
+                        <td><span class="grade grade-a">A+</span></td>
+                    </tr>
+                    <tr>
+                        <td>Physics</td>
+                        <td>40/50</td>
+                        <td>75/100</td>
+                        <td>115/150</td>
+                        <td>77%</td>
+                        <td><span class="grade grade-b">B+</span></td>
+                    </tr>
+                    <tr>
+                        <td>English Literature</td>
+                        <td>42/50</td>
+                        <td>80/100</td>
+                        <td>122/150</td>
+                        <td>81%</td>
+                        <td><span class="grade grade-b">B+</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Initialize page
+        window.onload = function() {
+            const username = localStorage.getItem('username');
+            const userType = localStorage.getItem('userType');
+            
+            if (!username || !userType) {
+                window.location.href = 'index2.html';
+                return;
+            }
+
+            // Display user information
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('student-id').textContent = `ID: ${username}`;
+            document.getElementById('avatar-display').textContent = username.substring(0, 2).toUpperCase();
+        };
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            sidebar.classList.toggle('visible');
+            mainContent.classList.toggle('sidebar-visible');
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('userType');
+            window.location.href = 'index2.html';
+        }
+    </script>
+</body>
+</html> 

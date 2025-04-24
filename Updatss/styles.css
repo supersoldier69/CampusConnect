@@ -1,0 +1,322 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background-color: #1a2b47;
+    min-height: 100vh;
+    color: white;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.header p {
+    margin: 0.5rem 0 0 0;
+    color: #8a9ab0;
+}
+
+.home-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-pic {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #ff8c00;
+    overflow: hidden;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.profile p {
+    margin: 0.25rem 0 0 0;
+    color: #8a9ab0;
+    font-size: 1rem;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.section {
+    background-color: rgba(17, 92, 191, 0.1);
+    border-radius: 12px;
+    padding: 1.6rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-title i {
+    color: #ff8c00;
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.1rem;
+}
+
+.status-icon {
+    font-size: 1.2rem;
+}
+
+.fa-check-circle {
+    color: #4CAF50;
+}
+
+.fa-times-circle {
+    color: #f44336;
+}
+
+.fa-clock {
+    color: #ff8c00;
+}
+
+.upcoming-exams {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.exam-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    font-size: 1.1rem;
+}
+
+.exam-date {
+    color: #ff8c00;
+    font-weight: 600;
+}
+
+.attendance-summary, .results-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.progress-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;    
+}
+
+.progress-item span {
+    font-size: 1.1rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #4CAF50;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-fill.status-good {
+    background-color: #4CAF50;
+}
+
+.progress-fill.status-warning {
+    background-color: #ffc107;
+}
+
+.progress-fill.status-danger {
+    background-color: #f44336;
+}
+
+/* Notifications Button */
+.notifications-btn {
+    position: relative;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-right: 1rem;
+}
+
+.notifications-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff4444;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* Notifications Panel */
+.notifications-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background-color: white;
+    color: #333;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.notifications-panel.show {
+    transform: translateX(0);
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+.notifications-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.notification-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f0f0f0;
+}
+
+.notification-item i {
+    font-size: 1.2rem;
+    margin-top: 0.2rem;
+}
+
+.notification-item .fa-info-circle {
+    color: #007bff;
+}
+
+.notification-item .fa-exclamation-triangle {
+    color: #ffc107;
+}
+
+.notification-item .fa-check-circle {
+    color: #28a745;
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-message {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+} 

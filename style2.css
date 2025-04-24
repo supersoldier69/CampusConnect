@@ -1,0 +1,233 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Container for the entire page */
+  .container {
+    background: #102b4e;
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Background elements */
+  .background-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  
+  .ellipse-14,
+  .ellipse-13,
+  .ellipse-1 {
+    border-radius: 50%;
+    filter: blur(3.125rem);
+    position: absolute;
+  }
+  
+  .ellipse-14 {
+    background: rgba(37, 99, 180, 0.4);
+    width: 30%;
+    height: 30%;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .ellipse-13 {
+    background: linear-gradient(180deg, rgba(180, 175, 37, 0.4) 0%, rgba(19, 2, 255, 0.4) 100%);
+    width: 40%;
+    height: 36%;
+    top: -10%;
+    left: -10%;
+  }
+  
+  .ellipse-1 {
+    background: rgba(37, 99, 180, 0.5);
+    width: 30%;
+    height: 27%;
+    bottom: -10%;
+    right: -10%;
+  }
+  
+  .bookmark-dynamic-gradient {
+    width: 15%;
+    height: auto;
+    position: absolute;
+    top: -9%;
+    left: -3%;
+  }
+  
+  /* Login Form */
+  .login-form {
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    z-index: 2;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .logo {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    width: 20rem;
+    height: 20rem;
+
+  }
+
+  .logo img {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    margin-bottom: -2rem;
+  }
+  
+  .form-group {
+    margin-bottom: -0.3rem;
+  }
+  
+  .form-group input {
+    border: none;
+    width: 90%;
+    padding: 0.8rem;
+    margin-top: 0rem;
+    margin-bottom: 2rem;
+    border-radius: 50px;
+    background: radial-gradient(circle, #2a5298 0%, #102b4e 110%);
+    font-size: 96%;
+    color: aliceblue;
+  }
+.form-group input:hover {
+  border: 3px solid #4285F4;
+    width: 90%;
+    padding: 0.8rem;
+    margin-bottom: 2rem;
+    border-radius: 50px;
+    background: #102b4e;
+    font-size: 96%;
+    color: aliceblue;
+  transition: background-color 0.1s ease-in-out;
+  }
+.form-group input:focus {
+  outline: none;
+  border: 3px solid #4285F4;
+  background: #102b4e;
+
+}
+  
+  .form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-options button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #3759e0;
+    border-radius: 10px;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .submit {
+    background: rgba(2, 179, 255, 0.19);
+    border: none;
+    border-radius: 51px;
+    color: #ffffff;
+    padding: 0.45rem 1.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 41%;
+  }
+.submit:hover {
+    border: 3px solid #4285F4;
+  background: none;
+    border-radius: 51px;
+    color: #ffffff;
+    padding: 0.45rem 1.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 41%;
+  transition: background-color 0.3s ease;
+  }
+.submit:active {
+background: rgba(2, 179, 255, 0.19);
+    border: none;
+    border-radius: 51px;
+    color: #ffffff;
+    padding: 0.45rem 1.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 41%;
+  transition: background-color 0.1s ease-in-out;
+  }
+      /* Toggle Button Styling */
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            border: 3px solid #4285F4;
+            border-radius: 50px;
+            padding: 3px;
+            width: 70%;
+            height: 50%;
+            margin: 17px auto;
+          margin-top: -3rem;
+            position: relative;
+        }
+
+        .toggle-wrapper {
+            position: relative;
+            display: flex;
+            width: 100%;
+        }
+
+        .toggle-highlight {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background-color: rgba(2, 179, 255, 0.23) ;
+            border-radius: 50px;
+            transition: 0.3s;
+            z-index: 1;
+        }
+
+        .toggle-btn {
+            padding: 15px;
+            font-size: 20px;
+            border: none;
+            background: none;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            width: 50%;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .active {
+            color: white;
+        }

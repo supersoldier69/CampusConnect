@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="stylesheet" href="styles4.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .faculty-container {
+            background-color: #1a2b47;
+            min-height: 100vh;
+            padding: 2rem;
+            color: white;
+        }
+
+        .form-section {
+            background-color: rgba(17, 92, 191, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff8c00;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #ff8c00;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67e00;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table th {
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-good {
+            background-color: #4CAF50;
+        }
+
+        .status-warning {
+            background-color: #ffc107;
+        }
+
+        .status-danger {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="faculty-container">
+        <header class="header">
+            <div>
+                <h1>Faculty Dashboard</h1>
+                <p>Manage academic data and student information</p>
+            </div>
+            <div class="profile">
+                <div class="profile-pic">
+                    <img src="faculty.jpg" alt="Faculty Picture">
+                </div>
+                <div>
+                    <h3>Dr. John Smith</h3>
+                    <p>Faculty ID: FAC12345</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Today's Classes Form -->
+            <div class="form-section">
+                <h2 class="section-title">Manage Today's Classes</h2>
+                <form id="classForm">
+                    <div class="form-group">
+                        <label for="classTime">Time</label>
+                        <input type="text" id="classTime" class="form-control" placeholder="e.g., 8:00 AM - 9:00 AM">
+                    </div>
+                    <div class="form-group">
+                        <label for="classSubject">Subject</label>
+                        <input type="text" id="classSubject" class="form-control" placeholder="e.g., Data Structures & Algorithms">
+                    </div>
+                    <div class="form-group">
+                        <label for="classStatus">Status</label>
+                        <select id="classStatus" class="form-control">
+                            <option value="upcoming">Upcoming</option>
+                            <option value="completed">Completed</option>
+                            <option value="missed">Missed</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Class</button>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="classesTableBody">
+                        <!-- Classes will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Upcoming Exams Form -->
+            <div class="form-section">
+                <h2 class="section-title">Manage Upcoming Exams</h2>
+                <form id="examForm">
+                    <div class="form-group">
+                        <label for="examDate">Date</label>
+                        <input type="text" id="examDate" class="form-control" placeholder="e.g., 15th Feb">
+                    </div>
+                    <div class="form-group">
+                        <label for="examSubject">Subject</label>
+                        <input type="text" id="examSubject" class="form-control" placeholder="e.g., Data Structures & Algorithms">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Exam</button>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="examsTableBody">
+                        <!-- Exams will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Attendance Summary Form -->
+            <div class="form-section">
+                <h2 class="section-title">Manage Attendance Summary</h2>
+                <form id="attendanceForm">
+                    <div class="form-group">
+                        <label for="attendanceSubject">Subject</label>
+                        <input type="text" id="attendanceSubject" class="form-control" placeholder="e.g., Data Structures & Algorithms">
+                    </div>
+                    <div class="form-group">
+                        <label for="attendancePercentage">Percentage</label>
+                        <input type="number" id="attendancePercentage" class="form-control" min="0" max="100" placeholder="e.g., 85">
+                    </div>
+                    <div class="form-group">
+                        <label for="attendanceStatus">Status</label>
+                        <select id="attendanceStatus" class="form-control">
+                            <option value="good">Good</option>
+                            <option value="warning">Warning</option>
+                            <option value="danger">Danger</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Attendance</button>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Percentage</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                        <!-- Attendance will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Results Summary Form -->
+            <div class="form-section">
+                <h2 class="section-title">Manage Results Summary</h2>
+                <form id="resultsForm">
+                    <div class="form-group">
+                        <label for="resultsSubject">Subject</label>
+                        <input type="text" id="resultsSubject" class="form-control" placeholder="e.g., Data Structures & Algorithms">
+                    </div>
+                    <div class="form-group">
+                        <label for="resultsPercentage">Percentage</label>
+                        <input type="number" id="resultsPercentage" class="form-control" min="0" max="100" placeholder="e.g., 88">
+                    </div>
+                    <div class="form-group">
+                        <label for="resultsGrade">Grade</label>
+                        <input type="text" id="resultsGrade" class="form-control" placeholder="e.g., A">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Results</button>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Percentage</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody">
+                        <!-- Results will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch data from Flask backend
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/${endpoint}`);
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching ${endpoint}:`, error);
+                return [];
+            }
+        }
+
+        // Function to update data in Flask backend
+        async function updateData(endpoint, data) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error(`Error updating ${endpoint}:`, error);
+                return null;
+            }
+        }
+
+        // Function to delete data from Flask backend
+        async function deleteData(endpoint, id) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/${endpoint}/${id}`, {
+                    method: 'DELETE'
+                });
+                return await response.json();
+            } catch (error) {
+                console.error(`Error deleting ${endpoint}:`, error);
+                return null;
+            }
+        }
+
+        // Function to update Today's Classes table
+        async function updateClassesTable() {
+            const classes = await fetchData('todays-classes');
+            const container = document.getElementById('classesTableBody');
+            container.innerHTML = classes.map((cls, index) => `
+                <tr>
+                    <td>${cls.time}</td>
+                    <td>${cls.subject}</td>
+                    <td><span class="status-badge status-${cls.status}">${cls.status}</span></td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary" onclick="editClass(${index})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteClass(${index})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Function to update Upcoming Exams table
+        async function updateExamsTable() {
+            const exams = await fetchData('upcoming-exams');
+            const container = document.getElementById('examsTableBody');
+            container.innerHTML = exams.map((exam, index) => `
+                <tr>
+                    <td>${exam.date}</td>
+                    <td>${exam.subject}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary" onclick="editExam(${index})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteExam(${index})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Function to update Attendance Summary table
+        async function updateAttendanceTable() {
+            const attendance = await fetchData('attendance-summary');
+            const container = document.getElementById('attendanceTableBody');
+            container.innerHTML = attendance.map((item, index) => `
+                <tr>
+                    <td>${item.subject}</td>
+                    <td>${item.percentage}%</td>
+                    <td><span class="status-badge status-${item.status}">${item.status}</span></td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary" onclick="editAttendance(${index})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteAttendance(${index})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Function to update Results Summary table
+        async function updateResultsTable() {
+            const results = await fetchData('results-summary');
+            const container = document.getElementById('resultsTableBody');
+            container.innerHTML = results.map((result, index) => `
+                <tr>
+                    <td>${result.subject}</td>
+                    <td>${result.percentage}%</td>
+                    <td>${result.grade}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary" onclick="editResult(${index})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteResult(${index})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Form submission handlers
+        document.getElementById('classForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                time: document.getElementById('classTime').value,
+                subject: document.getElementById('classSubject').value,
+                status: document.getElementById('classStatus').value
+            };
+            await updateData('todays-classes', data);
+            updateClassesTable();
+            e.target.reset();
+        });
+
+        document.getElementById('examForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                date: document.getElementById('examDate').value,
+                subject: document.getElementById('examSubject').value
+            };
+            await updateData('upcoming-exams', data);
+            updateExamsTable();
+            e.target.reset();
+        });
+
+        document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                subject: document.getElementById('attendanceSubject').value,
+                percentage: parseInt(document.getElementById('attendancePercentage').value),
+                status: document.getElementById('attendanceStatus').value
+            };
+            await updateData('attendance-summary', data);
+            updateAttendanceTable();
+            e.target.reset();
+        });
+
+        document.getElementById('resultsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                subject: document.getElementById('resultsSubject').value,
+                percentage: parseInt(document.getElementById('resultsPercentage').value),
+                grade: document.getElementById('resultsGrade').value
+            };
+            await updateData('results-summary', data);
+            updateResultsTable();
+            e.target.reset();
+        });
+
+        // Initial data load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateClassesTable();
+            updateExamsTable();
+            updateAttendanceTable();
+            updateResultsTable();
+        });
+    </script>
+</body>
+</html> 

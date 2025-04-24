@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Schedule</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f7fb;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e7b;
+            height: 100vh;
+            padding: 20px;
+            color: white;
+            position: fixed;
+            transition: transform 0.3s ease;
+            transform: translateX(-250px);
+        }
+
+        .sidebar.visible {
+            transform: translateX(0);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 0;
+            padding: 30px;
+            width: 100%;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.sidebar-visible {
+            margin-left: 250px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e7b;
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-info {
+            text-align: right;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Schedule Section */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .schedule-table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+
+        .schedule-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .day-header {
+            background-color: #e8f0fe;
+            color: #4285f4;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+            padding: 12px;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* College Timetable Styles */
+        .college-timetable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .college-timetable th,
+        .college-timetable td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .college-timetable th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: #1a1f36;
+        }
+
+        .timetable-header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .timetable-header h2 {
+            margin: 0;
+            color: #1a1f36;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .timetable-header p {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .break-cell {
+            background-color: #f1f5f9;
+            font-weight: 500;
+        }
+
+        .lunch-cell {
+            background-color: #f1f5f9;
+            font-weight: 500;
+        }
+
+        .lab-cell {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .theory-cell {
+            background-color: #fff;
+        }
+
+        .subject-code {
+            font-weight: 500;
+            color: #1a1f36;
+        }
+
+        .subject-info {
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <span class="material-icons">school</span>
+            CampusConnect
+        </div>
+        <div class="nav-item" onclick="navigateTo('dashboard.html')">
+            <span class="material-icons">dashboard</span>
+            Dashboard
+        </div>
+        <div class="nav-item active" onclick="navigateTo('schedule.html')">
+            <span class="material-icons">schedule</span>
+            Schedule
+        </div>
+        <div class="nav-item" onclick="navigateTo('courses.html')">
+            <span class="material-icons">menu_book</span>
+            Courses
+        </div>
+        <div class="nav-item" onclick="navigateTo('results.html')">
+            <span class="material-icons">assessment</span>
+            Results Summary
+        </div>
+        <div class="nav-item" onclick="navigateTo('exams.html')">
+            <span class="material-icons">event</span>
+            Upcoming Exams
+        </div>
+        <div class="nav-item" onclick="navigateTo('attendance.html')">
+            <span class="material-icons">how_to_reg</span>
+            Attendance
+        </div>
+        <div class="nav-item" onclick="navigateTo('assignments.html')">
+            <span class="material-icons">assignment</span>
+            Assignments
+        </div>
+        <div class="nav-item" onclick="navigateTo('settings.html')">
+            <span class="material-icons">settings</span>
+            Settings
+        </div>
+        <button class="logout-btn" onclick="logout()">
+            <span class="material-icons">logout</span>
+            Logout
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="header">
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                <span class="material-icons">menu</span>
+                <span style="margin-left: 10px;">CampusConnect</span>
+            </div>
+            <h1 class="page-title">Weekly Schedule</h1>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <div id="student-name">Welcome back, <span id="username-display"></span></div>
+                    <div id="student-id" style="color: #666; font-size: 14px;"></div>
+                </div>
+                <div class="avatar" id="avatar-display"></div>
+            </div>
+        </div>
+
+        <!-- Weekly Schedule Section -->
+        <div class="section">
+            <div class="timetable-header">
+                <h2>SEC - CSE- CSBS (Class Room - 110 CM)</h2>
+                <p>Class InCharge: Mr. D. Sujan Kumar | W.E.F:14.02.2025</p>
+            </div>
+            <table class="college-timetable">
+                <thead>
+                    <tr>
+                        <th>DAY</th>
+                        <th>9:00 AM to<br>10:00 AM<br>I</th>
+                        <th>10:00 AM to<br>11:00 AM<br>II</th>
+                        <th>11:00 AM to<br>11:10 AM</th>
+                        <th>11:10 AM to<br>12:10 PM<br>III</th>
+                        <th>12:10 PM to<br>1:10 PM<br>IV</th>
+                        <th>1:10 PM to<br>1:55 PM</th>
+                        <th>1:55 PM to<br>2:55 PM<br>V</th>
+                        <th>2:55 PM to<br>3:55 PM<br>VI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MONDAY</td>
+                        <td class="theory-cell">
+                            <div class="subject-code">CS</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">DAA</div>
+                        </td>
+                        <td class="break-cell" rowspan="6">BREAK</td>
+                        <td class="theory-cell">
+                            <div class="subject-code">OS</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">EDA</div>
+                        </td>
+                        <td class="lunch-cell" rowspan="6">LUNCH</td>
+                        <td class="lab-cell" colspan="2">
+                            <div class="subject-code">RFP LAB (308 CM)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>TUESDAY</td>
+                        <td class="theory-cell">
+                            <div class="subject-code">PSE</div>
+                        </td>
+                        <td class="lab-cell" colspan="3">
+                            <div class="subject-code">SE LAB(105 CB)</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">CS</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">DAA</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>WEDNESDAY</td>
+                        <td class="lab-cell" colspan="4">
+                            <div class="subject-code">E-BOX LAB (203 MB) -Ms B.Divya</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">OS</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">LIB</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>THURSDAY</td>
+                        <td class="lab-cell" colspan="4">
+                            <div class="subject-code">CS & EDA LAB(308 CM)</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">PSE</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">MENTORING</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>FRIDAY</td>
+                        <td class="lab-cell" colspan="4">
+                            <div class="subject-code">ALG & OS LAB(304CM)</div>
+                        </td>
+                        <td class="lab-cell" colspan="2">
+                            <div class="subject-code">RFP LAB (308 CM)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SATURDAY</td>
+                        <td class="theory-cell" colspan="2">
+                            <div class="subject-code">CRT (110 CM)</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">CS</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">OS</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">EDA</div>
+                        </td>
+                        <td class="theory-cell">
+                            <div class="subject-code">SPORTS</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px;">List of Subjects</h3>
+                <table class="schedule-table">
+                    <tbody>
+                        <tr>
+                            <td>1. Python for Exploratory Data Analysis</td>
+                            <td>Mr. D. Sujan Kumar (9849142914)</td>
+                        </tr>
+                        <tr>
+                            <td>2. Operating Systems</td>
+                            <td>Ms. G. Deepika (9848174439)</td>
+                        </tr>
+                        <tr>
+                            <td>3. Design and Analysis of Algorithms</td>
+                            <td>Dr. M. Raghava (9848096238)</td>
+                        </tr>
+                        <tr>
+                            <td>4. Principles of Software Engineering</td>
+                            <td>Dr. P. Madhavi (9010023522)</td>
+                        </tr>
+                        <tr>
+                            <td>5. Computational Statistics</td>
+                            <td>Ms.I.B.N.Hima Bindu (9490557389)</td>
+                        </tr>
+                        <tr>
+                            <td>6. Computational Statistics and EDA Laboratory</td>
+                            <td>
+                                Mr. D. Sujan Kumar (9849142914)<br>
+                                Mr. B. Ashwin Kumar (9985335688)<br>
+                                Ms. V.N.V.L.S. Swathi (8008527458)<br>
+                                Ms.I.B.N.Hima Bindu (9490557389)<br>
+                                Ms.A.Sailaja (9705689323)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>7. Algorithms and Operating Systems Lab</td>
+                            <td>
+                                Dr. M. Raghava (9848096238)<br>
+                                Ms. G. Deepika (9848174439)<br>
+                                Ms. M. Nagamani (8897575042)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>8. Software Engineering Laboratory</td>
+                            <td>
+                                Dr. P. Madhavi (9010023522)<br>
+                                Ms. G. Sushma (9989609116)<br>
+                                Dr. M. Swamidas (9849670205)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>9. Real-Time/Field-Based Research Project</td>
+                            <td>
+                                Mr. D. Sujan Kumar (9849142914)<br>
+                                Ms.B.Sindhu(9603675725)-<br>
+                                MON-1:55PM TO 3:45PM<br>
+                                Mr.Nayani Sateesh Reddy (9866769617)<br>
+                                FRI-1:55PM TO 3:45PM<br>
+                                Ms. G.V. Rama Lakshmi (7382005207)-Coordinator
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>9. Intellectual Property Rights</td>
+                            <td>Ms. Divya Bonigala (7331104601)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px;">Academic Calendar</h3>
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Period</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Commencement of Classwork</td>
+                            <td>23.12.2024</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>I spell of Instructions/Classwork</td>
+                            <td>23.12.2024 to 20.02.2025</td>
+                            <td>9 weeks</td>
+                        </tr>
+                        <tr>
+                            <td>Sankranti Holidays</td>
+                            <td>13.01.2025 to 14.01.2025</td>
+                            <td>2 Days</td>
+                        </tr>
+                        <tr>
+                            <td>I Mid Examinations</td>
+                            <td>21.02.2025 to 24.02.2025</td>
+                            <td>3 Days</td>
+                        </tr>
+                        <tr>
+                            <td>II spell of Instructions/Classwork</td>
+                            <td>25.02.2025 to 27.04.2025</td>
+                            <td>9 weeks</td>
+                        </tr>
+                        <tr>
+                            <td>II Mid Examinations</td>
+                            <td>28.04.2025 to 30.04.2025</td>
+                            <td>3 days</td>
+                        </tr>
+                        <tr>
+                            <td>Summer Vacation</td>
+                            <td>01.05.2025 to 31.05.2025</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Practical Examinations and Preparation Holidays</td>
+                            <td>01.06.2025 to 07.06.2025</td>
+                            <td>1 week</td>
+                        </tr>
+                        <tr>
+                            <td>Semester End Examinations (Main)& Supplementary Examinations</td>
+                            <td>08.06.2025 to 19.06.2025</td>
+                            <td>2 Weeks</td>
+                        </tr>
+                        <tr>
+                            <td>Commencement of Classwork for the III B.Tech I sem for the A.Y 2025-26</td>
+                            <td>26.06.2025</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="credentials.js"></script>
+    <script src="assets/js/click-spark.js"></script>
+    <script>
+        // Initialize page
+        window.onload = function() {
+            const username = localStorage.getItem('username');
+            const userType = localStorage.getItem('userType');
+            
+            if (!username || !userType) {
+                window.location.href = 'index2.html';
+                return;
+            }
+
+            // Display user information
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('student-id').textContent = `ID: ${username}`;
+            document.getElementById('avatar-display').textContent = username.substring(0, 2).toUpperCase();
+        };
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            sidebar.classList.toggle('visible');
+            mainContent.classList.toggle('sidebar-visible');
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('userType');
+            window.location.href = 'index2.html';
+        }
+    </script>
+</body>
+</html> 

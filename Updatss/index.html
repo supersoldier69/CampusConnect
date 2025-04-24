@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Overview</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div>
+                <h1>Academic Overview</h1>
+                <p>"Track your progress, schedules, and deadlines effortlessly."</p>
+            </div>
+            <div class="home-icon">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            <div class="profile">
+                <button class="notifications-btn" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notifications-badge">3</span>
+                </button>
+                <div class="profile-pic">
+                    <img src="profile.jpg" alt="Profile Picture">
+                </div>
+                <div>
+                    <h3>Mahesh Bob</h3>
+                    <p>23BB1A6969</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="section">
+                <h2 class="section-title">Today's Classes</h2>
+                <div class="schedule-list" id="todaysClasses">
+                    <!-- Classes will be loaded dynamically -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Upcoming Exams <i class="fas fa-bullseye"></i></h2>
+                <ul class="upcoming-exams" id="upcomingExams">
+                    <!-- Exams will be loaded dynamically -->
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Attendance Summary</h2>
+                <div class="attendance-summary" id="attendanceSummary">
+                    <!-- Attendance will be loaded dynamically -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Results Summary <i class="fas fa-chart-line"></i></h2>
+                <div class="results-summary" id="resultsSummary">
+                    <!-- Results will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <div class="notifications-panel" id="notificationsPanel">
+            <div class="notifications-header">
+                <h2 class="notifications-title">Notifications</h2>
+                <button class="close-btn" onclick="toggleNotifications()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="notifications-content">
+                <!-- Notifications will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch data from Flask backend
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/${endpoint}`);
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching ${endpoint}:`, error);
+                return [];
+            }
+        }
+
+        // Function to update Today's Classes
+        async function updateTodaysClasses() {
+            const classes = await fetchData('todays-classes');
+            const container = document.getElementById('todaysClasses');
+            container.innerHTML = classes.map(cls => `
+                <div class="schedule-item">
+                    <span>${cls.time} - ${cls.subject}</span>
+                    <i class="fas ${getStatusIcon(cls.status)} status-icon"></i>
+                </div>
+            `).join('');
+        }
+
+        // Function to update Upcoming Exams
+        async function updateUpcomingExams() {
+            const exams = await fetchData('upcoming-exams');
+            const container = document.getElementById('upcomingExams');
+            container.innerHTML = exams.map(exam => `
+                <li class="exam-item">
+                    <span class="exam-date">${exam.date}</span>
+                    <span>- ${exam.subject}</span>
+                </li>
+            `).join('');
+        }
+
+        // Function to update Attendance Summary
+        async function updateAttendanceSummary() {
+            const attendance = await fetchData('attendance-summary');
+            const container = document.getElementById('attendanceSummary');
+            container.innerHTML = attendance.map(item => `
+                <div class="progress-item">
+                    <span>${item.subject} - ${item.percentage}% ${getStatusText(item.status)}</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${getStatusClass(item.status)}" style="width: ${item.percentage}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Function to update Results Summary
+        async function updateResultsSummary() {
+            const results = await fetchData('results-summary');
+            const container = document.getElementById('resultsSummary');
+            container.innerHTML = results.map(result => `
+                <div class="progress-item">
+                    <span>${result.subject} - ${result.percentage}% (${result.grade} Grade)</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${result.percentage}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Helper functions
+        function getStatusIcon(status) {
+            switch(status) {
+                case 'completed': return 'fa-check-circle';
+                case 'missed': return 'fa-times-circle';
+                case 'upcoming': return 'fa-clock';
+                default: return 'fa-circle';
+            }
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'good': return 'status-good';
+                case 'warning': return 'status-warning';
+                case 'danger': return 'status-danger';
+                default: return '';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'good': return '';
+                case 'warning': return '(Close to shortage)';
+                case 'danger': return '(Needs improvement)';
+                default: return '';
+            }
+        }
+
+        // Function to toggle notifications panel
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationsPanel');
+            panel.classList.toggle('show');
+        }
+
+        // Initial data load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTodaysClasses();
+            updateUpcomingExams();
+            updateAttendanceSummary();
+            updateResultsSummary();
+
+            // Set up periodic updates (every 5 minutes)
+            setInterval(() => {
+                updateTodaysClasses();
+                updateUpcomingExams();
+                updateAttendanceSummary();
+                updateResultsSummary();
+            }, 300000); // 5 minutes
+        });
+    </script>
+</body>
+</html> 

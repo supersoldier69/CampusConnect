@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Assignments</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/assignments.css">
+    <script src="../../credentials.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h2>Student Portal</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="student-dashboard.html">Dashboard</a></li>
+            <li><a href="student-assignments.html" class="active">Assignments</a></li>
+            <li><a href="student-grades.html">Grades</a></li>
+            <li><a href="student-profile.html">Profile</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Assignments</h1>
+            <div class="user-profile">
+                <span id="studentName">Loading...</span>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="assignments-container">
+            <div class="assignments-list">
+                <h2>Available Assignments</h2>
+                <div id="assignmentsList"></div>
+            </div>
+
+            <div class="submissions-list">
+                <h2>Your Submissions</h2>
+                <div id="submissionsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Modal -->
+    <div id="submissionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Submit Assignment</h2>
+            <form id="submissionForm">
+                <input type="hidden" id="assignmentId">
+                <div class="form-group">
+                    <label for="submissionComments">Comments:</label>
+                    <textarea id="submissionComments" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="submissionFile">Attach File:</label>
+                    <input type="file" id="submissionFile">
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Load student name on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const username = localStorage.getItem('username');
+            const userType = localStorage.getItem('userType');
+            
+            if (!username || userType !== 'student') {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Get student details
+            const student = studentCredentials[username];
+            if (!student) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            document.getElementById('studentName').textContent = student.name;
+            loadAssignments();
+            loadSubmissions();
+        });
+
+        function loadAssignments() {
+            const assignments = JSON.parse(localStorage.getItem('facultyAssignments')) || [];
+            const assignmentsList = document.getElementById('assignmentsList');
+            assignmentsList.innerHTML = '';
+
+            assignments.forEach(assignment => {
+                const assignmentDiv = document.createElement('div');
+                assignmentDiv.className = 'assignment-item';
+                assignmentDiv.innerHTML = `
+                    <h3>${assignment.title}</h3>
+                    <p>${assignment.description}</p>
+                    <p><strong>Due Date:</strong> ${assignment.dueDate}</p>
+                    <p><strong>Created by:</strong> ${assignment.instructor}</p>
+                    <button onclick="openSubmissionModal('${assignment.id}')">Submit</button>
+                `;
+                assignmentsList.appendChild(assignmentDiv);
+            });
+        }
+
+        function loadSubmissions() {
+            const submissions = JSON.parse(localStorage.getItem('assignmentSubmissions')) || [];
+            const username = localStorage.getItem('username');
+            const submissionsList = document.getElementById('submissionsList');
+            submissionsList.innerHTML = '';
+
+            const userSubmissions = submissions.filter(sub => sub.studentId === username);
+            userSubmissions.forEach(submission => {
+                const submissionDiv = document.createElement('div');
+                submissionDiv.className = 'submission-item';
+                submissionDiv.innerHTML = `
+                    <h3>${submission.assignmentTitle}</h3>
+                    <p><strong>Submitted:</strong> ${submission.submittedAt}</p>
+                    <p><strong>Comments:</strong> ${submission.comments || 'No comments provided'}</p>
+                    <p><strong>Grade:</strong> ${submission.grade || 'Not graded yet'}</p>
+                `;
+                submissionsList.appendChild(submissionDiv);
+            });
+        }
+
+        function openSubmissionModal(assignmentId) {
+            const modal = document.getElementById('submissionModal');
+            document.getElementById('assignmentId').value = assignmentId;
+            modal.style.display = 'block';
+        }
+
+        document.getElementById('submissionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const assignmentId = document.getElementById('assignmentId').value;
+            const comments = document.getElementById('submissionComments').value;
+            const fileInput = document.getElementById('submissionFile');
+            const username = localStorage.getItem('username');
+            
+            // Get student details
+            const student = studentCredentials[username];
+            if (!student) {
+                alert('Student credentials not found. Please log in again.');
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Get assignment details
+            const assignments = JSON.parse(localStorage.getItem('facultyAssignments')) || [];
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (!assignment) {
+                alert('Assignment not found');
+                return;
+            }
+
+            // Check if already submitted
+            const submissions = JSON.parse(localStorage.getItem('assignmentSubmissions') || '[]');
+            const existingSubmission = submissions.find(sub => 
+                sub.assignmentId === assignmentId && sub.studentId === username
+            );
+            
+            if (existingSubmission) {
+                alert('You have already submitted this assignment.');
+                return;
+            }
+
+            const submission = {
+                id: Date.now().toString(),
+                assignmentId: assignmentId,
+                assignmentTitle: assignment.title,
+                studentId: username,
+                studentName: student.name,
+                comments: comments,
+                submittedAt: new Date().toISOString(),
+                grade: null
+            };
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    submission.files = [{
+                        name: file.name,
+                        size: file.size,
+                        type: file.type
+                    }];
+                    saveSubmission(submission);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveSubmission(submission);
+            }
+        });
+
+        function saveSubmission(submission) {
+            const submissions = JSON.parse(localStorage.getItem('assignmentSubmissions') || '[]');
+            submissions.push(submission);
+            localStorage.setItem('assignmentSubmissions', JSON.stringify(submissions));
+            
+            // Update assignment submissions count
+            let assignments = JSON.parse(localStorage.getItem('facultyAssignments') || '[]');
+            const assignmentIndex = assignments.findIndex(a => a.id === submission.assignmentId);
+            if (assignmentIndex !== -1) {
+                assignments[assignmentIndex].submissions = (assignments[assignmentIndex].submissions || 0) + 1;
+                localStorage.setItem('facultyAssignments', JSON.stringify(assignments));
+            }
+            
+            document.getElementById('submissionModal').style.display = 'none';
+            document.getElementById('submissionForm').reset();
+            loadSubmissions();
+            loadAssignments(); // Refresh assignments list to update submission status
+        }
+
+        // Close modal when clicking the X
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('submissionModal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('submissionModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('userType');
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html> 

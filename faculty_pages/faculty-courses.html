@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Faculty Courses</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f8f9fd;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            height: 100vh;
+            padding: 20px;
+            color: #1a1f36;
+            position: fixed;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6366f1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 12px;
+            gap: 12px;
+            transition: all 0.3s;
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: #f1f5f9;
+            color: #6366f1;
+        }
+
+        .nav-item.active {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Course Management Styles */
+        .course-management {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .course-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .action-button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .primary-button {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        .secondary-button {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+
+        .action-button:hover {
+            opacity: 0.9;
+        }
+
+        /* Course Table */
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .course-table th,
+        .course-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .course-table th {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .course-table td {
+            color: #1a1f36;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #ecfdf5;
+            color: #10b981;
+        }
+
+        .status-inactive {
+            background-color: #fef2f2;
+            color: #ef4444;
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 10px 16px;
+            flex: 1;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            color: #1a1f36;
+        }
+
+        .filter-dropdown {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #1a1f36;
+            cursor: pointer;
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-info {
+            text-align: right;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .profile-role {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Course Grid Styles */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .course-header {
+            padding: 15px;
+            background: #6366f1;
+            color: white;
+        }
+
+        .course-code {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+
+        .course-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .course-instructor {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .course-content {
+            padding: 15px;
+        }
+
+        .course-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fd;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #6366f1;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .primary-button {
+            background: #6366f1;
+            color: white;
+        }
+
+        .primary-button:hover {
+            background: #4f46e5;
+        }
+
+        .secondary-button {
+            background: #f1f5f9;
+            color: #1a1f36;
+        }
+
+        .secondary-button:hover {
+            background: #e2e8f0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 24px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .course-details-section {
+            margin-bottom: 20px;
+        }
+
+        .course-details-section h3 {
+            color: #1a1f36;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .course-details-section p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .course-syllabus {
+            background: #f8f9fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .syllabus-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .syllabus-item:last-child {
+            border-bottom: none;
+        }
+
+        .syllabus-topic {
+            color: #1a1f36;
+            font-weight: 500;
+        }
+
+        .syllabus-duration {
+            color: #64748b;
+        }
+
+        .course-resources {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .resource-card {
+            background: #f8f9fd;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resource-icon {
+            color: #6366f1;
+        }
+
+        .resource-info h4 {
+            color: #1a1f36;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .resource-info p {
+            color: #64748b;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <span class="material-icons">school</span>
+            CampusConnect
+        </div>
+        <a href="faculty-dashboard.html" class="nav-item">
+            <span class="material-icons">dashboard</span>
+            Dashboard
+        </a>
+        <a href="faculty-courses.html" class="nav-item active">
+            <span class="material-icons">menu_book</span>
+            Courses
+        </a>
+        <a href="faculty-students.html" class="nav-item">
+            <span class="material-icons">people</span>
+            Students
+        </a>
+        <a href="faculty-assignments.html" class="nav-item">
+            <span class="material-icons">assignment</span>
+            Assignments
+        </a>
+        <a href="faculty-grades.html" class="nav-item">
+            <span class="material-icons">grade</span>
+            Grades
+        </a>
+        <a href="faculty-schedule.html" class="nav-item">
+            <span class="material-icons">schedule</span>
+            Schedule
+        </a>
+        <a href="faculty-settings.html" class="nav-item">
+            <span class="material-icons">settings</span>
+            Settings
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="search-filter">
+                <div class="search-bar">
+                    <span class="material-icons">search</span>
+                    <input type="text" placeholder="Search courses...">
+                </div>
+                <select class="filter-dropdown">
+                    <option value="all">All Courses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <div class="profile-name" id="username-display"></div>
+                    <div class="profile-role" id="faculty-id"></div>
+                </div>
+                <div class="avatar" id="avatar-display"></div>
+            </div>
+        </div>
+
+        <!-- Course Management -->
+        <div class="course-management">
+            <div class="course-section">
+                <div class="section-header">
+                    <div class="section-title">Course Management</div>
+                </div>
+                <div class="courses-grid" id="courses-container">
+                    <!-- Course cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Course Details -->
+    <div class="modal" id="courseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalCourseTitle"></h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalCourseContent">
+                <!-- Course details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="credentials.js"></script>
+    <script src="assets/js/click-spark.js"></script>
+    <script>
+        // Initialize page
+        window.onload = function() {
+            const username = localStorage.getItem('username');
+            const userType = localStorage.getItem('userType');
+            
+            if (!username || userType !== 'faculty') {
+                window.location.href = 'index2.html';
+                return;
+            }
+
+            // Display user information
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('faculty-id').textContent = `Faculty ID: ${username}`;
+            document.getElementById('avatar-display').textContent = username.substring(0, 2).toUpperCase();
+
+            // Fetch and populate courses
+            fetchCourses();
+        };
+
+        function fetchCourses() {
+            // Course data matching student courses
+            const courses = [
+                {
+                    code: "CS2001",
+                    name: "Python for EDA",
+                    instructor: "Dr. D. Sujan Kumar",
+                    students: 45,
+                    status: "active",
+                    credits: 4,
+                    hours: 60,
+                    color: '#4f46e5',
+                    description: "This course introduces students to Python programming with a focus on Exploratory Data Analysis (EDA). Students will learn how to use Python libraries like Pandas, NumPy, and Matplotlib for data manipulation, visualization, and analysis.",
+                    objectives: [
+                        'Understand Python programming fundamentals',
+                        'Learn data manipulation with Pandas',
+                        'Master data visualization techniques',
+                        'Apply statistical analysis methods',
+                        'Develop EDA projects'
+                    ],
+                    syllabus: [
+                        { topic: 'Python Basics', duration: '2 weeks' },
+                        { topic: 'NumPy Fundamentals', duration: '2 weeks' },
+                        { topic: 'Pandas DataFrames', duration: '3 weeks' },
+                        { topic: 'Data Visualization', duration: '2 weeks' },
+                        { topic: 'Statistical Analysis', duration: '2 weeks' },
+                        { topic: 'Project Work', duration: '3 weeks' }
+                    ],
+                    resources: [
+                        { name: 'Course Textbook', type: 'PDF' },
+                        { name: 'Lecture Slides', type: 'PPT' },
+                        { name: 'Practice Datasets', type: 'CSV' },
+                        { name: 'Jupyter Notebooks', type: 'IPYNB' }
+                    ]
+                },
+                {
+                    code: "CS2002",
+                    name: "Operating Systems",
+                    instructor: "G.Deepika",
+                    students: 38,
+                    status: "active",
+                    description: "This course covers fundamental concepts of operating systems including process management, memory management, file systems, and concurrency. Students will gain hands-on experience with system programming and OS internals.",
+                    objectives: [
+                        'Understand OS architecture',
+                        'Learn process scheduling',
+                        'Master memory management',
+                        'Study file systems',
+                        'Implement system calls'
+                    ],
+                    syllabus: [
+                        { topic: 'OS Overview', duration: '2 weeks' },
+                        { topic: 'Process Management', duration: '3 weeks' },
+                        { topic: 'Memory Management', duration: '3 weeks' },
+                        { topic: 'File Systems', duration: '2 weeks' },
+                        { topic: 'Concurrency', duration: '2 weeks' },
+                        { topic: 'System Programming', duration: '2 weeks' }
+                    ],
+                    resources: [
+                        { name: 'OS Textbook', type: 'PDF' },
+                        { name: 'Lab Manual', type: 'PDF' },
+                        { name: 'System Calls Guide', type: 'PDF' },
+                        { name: 'Practice Problems', type: 'DOC' }
+                    ]
+                },
+                {
+                    code: "CS2003",
+                    name: "Design & Analysis of Algorithms",
+                    instructor: "Dr. M. Raghava",
+                    students: 42,
+                    status: "active",
+                    description: "This course focuses on the design and analysis of efficient algorithms. Students will learn various algorithm design techniques and how to analyze their time and space complexity.",
+                    objectives: [
+                        'Learn algorithm design techniques',
+                        'Understand complexity analysis',
+                        'Master sorting algorithms',
+                        'Study graph algorithms',
+                        'Implement dynamic programming'
+                    ],
+                    syllabus: [
+                        { topic: 'Algorithm Analysis', duration: '2 weeks' },
+                        { topic: 'Sorting Algorithms', duration: '2 weeks' },
+                        { topic: 'Divide & Conquer', duration: '2 weeks' },
+                        { topic: 'Dynamic Programming', duration: '3 weeks' },
+                        { topic: 'Graph Algorithms', duration: '3 weeks' },
+                        { topic: 'NP-Completeness', duration: '2 weeks' }
+                    ],
+                    resources: [
+                        { name: 'Algorithm Textbook', type: 'PDF' },
+                        { name: 'Problem Sets', type: 'PDF' },
+                        { name: 'Algorithm Visualizations', type: 'WEB' },
+                        { name: 'Practice Problems', type: 'DOC' }
+                    ]
+                },
+                {
+                    code: "CS2004",
+                    name: "Software Engineering",
+                    instructor: "Dr. P. Madhavi",
+                    students: 35,
+                    status: "active",
+                    description: "This course covers software development methodologies, design patterns, and best practices. Students will learn about the software development lifecycle and work on team projects.",
+                    objectives: [
+                        'Understand SDLC',
+                        'Learn design patterns',
+                        'Master version control',
+                        'Study testing methodologies',
+                        'Work on team projects'
+                    ],
+                    syllabus: [
+                        { topic: 'Software Process', duration: '2 weeks' },
+                        { topic: 'Requirements Engineering', duration: '2 weeks' },
+                        { topic: 'System Design', duration: '3 weeks' },
+                        { topic: 'Implementation', duration: '3 weeks' },
+                        { topic: 'Testing', duration: '2 weeks' },
+                        { topic: 'Project Management', duration: '2 weeks' }
+                    ],
+                    resources: [
+                        { name: 'SE Textbook', type: 'PDF' },
+                        { name: 'Case Studies', type: 'PDF' },
+                        { name: 'Design Patterns', type: 'PDF' },
+                        { name: 'Project Templates', type: 'ZIP' }
+                    ]
+                },
+                {
+                    code: "CS2005",
+                    name: "Computational Statistics",
+                    instructor: "I.B.N.Hima Bindu",
+                    students: 40,
+                    status: "active",
+                    description: "This course combines statistical theory with computational methods. Students will learn how to implement statistical algorithms and analyze data using computational tools.",
+                    objectives: [
+                        'Learn statistical computing',
+                        'Understand Monte Carlo methods',
+                        'Master regression analysis',
+                        'Study machine learning basics',
+                        'Implement statistical algorithms'
+                    ],
+                    syllabus: [
+                        { topic: 'Statistical Computing', duration: '2 weeks' },
+                        { topic: 'Probability Distributions', duration: '2 weeks' },
+                        { topic: 'Monte Carlo Methods', duration: '2 weeks' },
+                        { topic: 'Regression Analysis', duration: '3 weeks' },
+                        { topic: 'Machine Learning', duration: '3 weeks' },
+                        { topic: 'Statistical Projects', duration: '2 weeks' }
+                    ],
+                    resources: [
+                        { name: 'Statistics Textbook', type: 'PDF' },
+                        { name: 'R Programming Guide', type: 'PDF' },
+                        { name: 'Data Sets', type: 'CSV' },
+                        { name: 'Statistical Software', type: 'EXE' }
+                    ]
+                }
+            ];
+
+            const coursesContainer = document.getElementById('courses-container');
+            coursesContainer.innerHTML = courses.map(course => `
+                <div class="course-card">
+                    <div class="course-header" style="background: ${course.color}">
+                        <div class="course-code">${course.code}</div>
+                        <div class="course-title">${course.name}</div>
+                        <div class="course-instructor">
+                            <span class="material-icons">person</span>
+                            ${course.instructor}
+                        </div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">${course.credits}</div>
+                                <div class="stat-label">Credits</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${course.students}</div>
+                                <div class="stat-label">Students</div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="action-button secondary-button" onclick="showCourseDetails('${course.code}')">
+                                <span class="material-icons">info</span>
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Store courses data for modal
+            window.coursesData = courses;
+        }
+
+        function showCourseDetails(courseCode) {
+            const course = window.coursesData.find(c => c.code === courseCode);
+            if (!course) return;
+
+            const modal = document.getElementById('courseModal');
+            const modalTitle = document.getElementById('modalCourseTitle');
+            const modalContent = document.getElementById('modalCourseContent');
+
+            modalTitle.textContent = `${course.code} - ${course.name}`;
+            modalContent.innerHTML = `
+                <div class="course-details-section">
+                    <h3>Course Description</h3>
+                    <p>${course.description}</p>
+                </div>
+
+                <div class="course-details-section">
+                    <h3>Course Objectives</h3>
+                    <ul style="color: #64748b; margin-left: 20px;">
+                        ${course.objectives.map(obj => `<li>${obj}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="course-details-section">
+                    <h3>Course Syllabus</h3>
+                    <div class="course-syllabus">
+                        ${course.syllabus.map(item => `
+                            <div class="syllabus-item">
+                                <span class="syllabus-topic">${item.topic}</span>
+                                <span class="syllabus-duration">${item.duration}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="course-details-section">
+                    <h3>Course Resources</h3>
+                    <div class="course-resources">
+                        ${course.resources.map(resource => `
+                            <div class="resource-card">
+                                <span class="material-icons resource-icon">description</span>
+                                <div class="resource-info">
+                                    <h4>${resource.name}</h4>
+                                    <p>${resource.type}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('courseModal');
+            modal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('courseModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html> 

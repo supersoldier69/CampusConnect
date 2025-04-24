@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f8f9fd;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e7b;
+            height: 100vh;
+            padding: 20px;
+            color: white;
+            position: fixed;
+            transition: transform 0.3s ease;
+            transform: translateX(-250px);
+            z-index: 1000;
+        }
+
+        .sidebar.visible {
+            transform: translateX(0);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 0;
+            padding: 30px;
+            width: 100%;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.sidebar-visible {
+            margin-left: 250px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .menu-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e7b;
+        }
+
+        .welcome-section {
+            margin-bottom: 30px;
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 8px;
+        }
+
+        .welcome-subtext {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .overview-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .overview-card-title {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .overview-card-number {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        /* Activity Chart Styles */
+        .activity-chart {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .chart-period {
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-item {
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.blue { background-color: #6366f1; }
+        .progress-fill.green { background-color: #10b981; }
+        .progress-fill.orange { background-color: #f59e0b; }
+
+        /* Assignments Section */
+        .assignment-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .assignment-item:last-child {
+            border-bottom: none;
+        }
+
+        .assignment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+        }
+
+        .assignment-info {
+            flex-grow: 1;
+        }
+
+        .assignment-title {
+            font-weight: 500;
+            color: #1a1f36;
+            margin-bottom: 4px;
+        }
+
+        .assignment-subject {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .assignment-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: #f1f5f9;
+            color: #6366f1;
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-info {
+            text-align: right;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .profile-role {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 10px 16px;
+            width: 300px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            color: #1a1f36;
+        }
+
+        .search-bar .material-icons {
+            color: #64748b;
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-title {
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-day:hover {
+            background: #f1f5f9;
+        }
+
+        .calendar-day.active {
+            background: #6366f1;
+            color: white;
+        }
+
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+            padding: 12px;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Real-time Attendance Status */
+        .attendance-status-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .status-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-badge.present {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-badge.absent {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-badge.late {
+            background: #fef9c3;
+            color: #ca8a04;
+        }
+
+        .status-details {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Add these styles to your existing CSS */
+        .class-schedule-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .class-schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .class-time {
+            width: 140px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .class-info {
+            flex-grow: 1;
+        }
+
+        .class-subject {
+            font-weight: 500;
+            color: #1a1f36;
+        }
+
+        .class-code {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .attendance-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .attendance-badge.present {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .attendance-badge.absent {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .attendance-badge.late {
+            background: #fef9c3;
+            color: #ca8a04;
+        }
+
+        .attendance-badge.not-marked {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .current-class-indicator {
+            position: absolute;
+            left: -2px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #6366f1;
+            border-radius: 2px;
+        }
+
+        .performance-metrics {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .metrics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .metrics-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .metric-progress {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 8px;
+        }
+
+        .metric-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: #6366f1;
+            transition: width 0.5s ease;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .performance-chart {
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <span class="material-icons">school</span>
+            CampusConnect
+        </div>
+        <div class="nav-item active" onclick="navigateTo('dashboard.html')">
+            <span class="material-icons">dashboard</span>
+            Dashboard
+        </div>
+        <div class="nav-item" onclick="navigateTo('courses.html')">
+            <span class="material-icons">menu_book</span>
+            Courses
+        </div>
+        <div class="nav-item" onclick="navigateTo('schedule.html')">
+            <span class="material-icons">schedule</span>
+            Schedule
+        </div>
+        <div class="nav-item" onclick="navigateTo('results.html')">
+            <span class="material-icons">assessment</span>
+            Results Summary
+        </div>
+        <div class="nav-item" onclick="navigateTo('exams.html')">
+            <span class="material-icons">event</span>
+            Upcoming Exams
+        </div>
+        <div class="nav-item" onclick="navigateTo('attendance.html')">
+            <span class="material-icons">how_to_reg</span>
+            Attendance
+        </div>
+        <div class="nav-item" onclick="navigateTo('assignments.html')">
+            <span class="material-icons">assignment</span>
+            Assignments
+        </div>
+        <div class="nav-item" onclick="navigateTo('settings.html')">
+            <span class="material-icons">settings</span>
+            Settings
+        </div>
+        <button class="logout-btn" onclick="logout()">
+            <span class="material-icons">logout</span>
+            Logout
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                <span class="material-icons">menu</span>
+                <span style="margin-left: 10px;">CampusConnect</span>
+            </div>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <div class="profile-name" id="username-display"></div>
+                    <div class="profile-role" id="student-id"></div>
+                </div>
+                <div class="avatar" id="avatar-display"></div>
+            </div>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-text">Hello <span id="welcome-name"></span> 👋</div>
+            <div class="welcome-subtext">Let's learn something new today!</div>
+        </div>
+
+        <!-- Real-time Attendance Status -->
+        <div class="attendance-status-card">
+            <div class="status-header">
+                <div class="status-title">Today's Schedule & Attendance</div>
+                <div id="current-time"></div>
+            </div>
+            <div id="attendance-status-content">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Overview Cards -->
+        <div class="overview-cards">
+            <div class="overview-card">
+                <div class="overview-card-title">
+                    <span class="material-icons" style="color: #ef4444;">play_circle</span>
+                    Current Semester
+                </div>
+                <div class="overview-card-number">IV</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-card-title">
+                    <span class="material-icons" style="color: #10b981;">check_circle</span>
+                    Subjects
+                </div>
+                <div class="overview-card-number">9</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-card-title">
+                    <span class="material-icons" style="color: #6366f1;">military_tech</span>
+                    Labs
+                </div>
+                <div class="overview-card-number">4</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-card-title">
+                    <span class="material-icons" style="color: #8b5cf6;">people</span>
+                    Faculty
+                </div>
+                <div class="overview-card-number">12</div>
+            </div>
+        </div>
+
+        <!-- Main Sections Grid -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <!-- Left Column -->
+            <div>
+                <!-- Performance Metrics -->
+                <div class="performance-metrics">
+                    <div class="metrics-header">
+                        <div class="metrics-title">Performance Metrics</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Overall Attendance</div>
+                            <div class="metric-value" id="attendance-metric">85%</div>
+                            <div class="metric-progress">
+                                <div class="metric-progress-fill" id="attendance-progress" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Average Grade</div>
+                            <div class="metric-value" id="grade-metric">78%</div>
+                            <div class="metric-progress">
+                                <div class="metric-progress-fill" id="grade-progress" style="width: 78%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <div class="chart-title">Grades Comparison</div>
+                            <div class="performance-chart">
+                                <canvas id="grades-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-title">Attendance Comparison</div>
+                            <div class="performance-chart">
+                                <canvas id="attendance-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Hours -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">Academic Progress</div>
+                        <div class="chart-period">IV Semester</div>
+                    </div>
+                    <div id="progress-container">
+                        <!-- Progress bars will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Assignments -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">Current Labs & Assignments</div>
+                    </div>
+                    <div id="assignments-container">
+                        <!-- Assignment items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <!-- Calendar -->
+                <div class="section">
+                    <div class="calendar-header">
+                        <div class="calendar-title">February 2025</div>
+                        <div class="calendar-nav">
+                            <button><span class="material-icons">chevron_left</span></button>
+                            <button><span class="material-icons">chevron_right</span></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        <!-- Calendar days will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">Academic Calendar</div>
+                    </div>
+                    <div id="schedule-container">
+                        <!-- Schedule items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="credentials.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/click-spark.js"></script>
+    <script>
+        // Initialize dashboard
+        window.onload = function() {
+            const username = localStorage.getItem('username');
+            const userType = localStorage.getItem('userType');
+            
+            if (!username || !userType) {
+                window.location.href = 'index2.html';
+                return;
+            }
+
+            // Display user information
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('student-id').textContent = `ID: ${username}`;
+            document.getElementById('avatar-display').textContent = username.substring(0, 2).toUpperCase();
+            document.getElementById('welcome-name').textContent = username;
+
+            // Initialize performance chart
+            initializePerformanceChart();
+
+            // Start polling for attendance status
+            pollAttendanceStatus();
+
+            // Initialize calendar
+            initializeCalendar();
+
+            // Fetch and populate data
+            fetchAndPopulateData();
+        };
+
+        function initializeCalendar() {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const calendarGrid = document.querySelector('.calendar-grid');
+            const calendarTitle = document.querySelector('.calendar-title');
+            
+            // Clear existing calendar
+            calendarGrid.innerHTML = '';
+            
+            // Get current date
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            const today = currentDate.getDate();
+            
+            // Set calendar title to current month and year
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            calendarTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Add day headers
+            days.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day';
+                dayHeader.style.color = '#64748b';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+
+            // Get first day of the month
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day';
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            // Get number of days in the current month
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Add calendar days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                if (i === today) {
+                    dayElement.classList.add('active');
+                }
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function fetchAndPopulateData() {
+            // Populate progress data
+            const progressData = [
+                { subject: 'Python for EDA', progress: 75, color: 'blue' },
+                { subject: 'Operating Systems', progress: 65, color: 'green' },
+                { subject: 'Design & Analysis of Algorithms', progress: 80, color: 'orange' },
+                { subject: 'Software Engineering', progress: 70, color: 'blue' },
+                { subject: 'Computational Statistics', progress: 60, color: 'green' }
+            ];
+
+            const progressContainer = document.getElementById('progress-container');
+            progressContainer.innerHTML = '';
+            progressData.forEach(item => {
+                progressContainer.innerHTML += `
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <div>${item.subject}</div>
+                            <div>${item.progress}%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${item.color}" style="width: ${item.progress}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Populate assignments/labs
+            const assignmentsData = [
+                {
+                    title: "CS & EDA Lab",
+                    subject: "Room: 308 CM",
+                    icon: "computer",
+                    color: "purple",
+                    dueIn: "Thursday"
+                },
+                {
+                    title: "ALG & OS Lab",
+                    subject: "Room: 304 CM",
+                    icon: "code",
+                    color: "orange",
+                    dueIn: "Friday"
+                },
+                {
+                    title: "RFP Lab",
+                    subject: "Room: 308 CM",
+                    icon: "science",
+                    color: "purple",
+                    dueIn: "Monday"
+                },
+                {
+                    title: "SE Lab",
+                    subject: "Room: 105 CB",
+                    icon: "engineering",
+                    color: "orange",
+                    dueIn: "Tuesday"
+                }
+            ];
+
+            const assignmentsContainer = document.getElementById('assignments-container');
+            assignmentsContainer.innerHTML = '';
+            assignmentsData.forEach(item => {
+                assignmentsContainer.innerHTML += `
+                    <div class="assignment-item">
+                        <div class="assignment-icon" style="background-color: ${item.color === 'purple' ? '#f3e8ff' : '#fff1e6'}; color: ${item.color === 'purple' ? '#9747ff' : '#ff7a00'}">
+                            <span class="material-icons">${item.icon}</span>
+                        </div>
+                        <div class="assignment-info">
+                            <div class="assignment-title">${item.title}</div>
+                            <div class="assignment-subject">${item.subject}</div>
+                        </div>
+                        <div class="assignment-status">${item.dueIn}</div>
+                    </div>
+                `;
+            });
+
+            // Populate academic calendar events
+            const scheduleData = [
+                {
+                    subject: "I Mid Examinations",
+                    location: "21.02.2025 to 24.02.2025",
+                    time: "3 Days"
+                },
+                {
+                    subject: "II Mid Examinations",
+                    location: "28.04.2025 to 30.04.2025",
+                    time: "3 Days"
+                },
+                {
+                    subject: "Semester End Examinations",
+                    location: "08.06.2025 to 19.06.2025",
+                    time: "2 Weeks"
+                },
+                {
+                    subject: "Summer Vacation",
+                    location: "01.05.2025 to 31.05.2025",
+                    time: "1 Month"
+                }
+            ];
+
+            const scheduleContainer = document.getElementById('schedule-container');
+            scheduleContainer.innerHTML = '';
+            scheduleData.forEach(item => {
+                scheduleContainer.innerHTML += `
+                    <div class="assignment-item">
+                        <div class="assignment-icon" style="background-color: #f1f5f9;">
+                            <span class="material-icons">event</span>
+                        </div>
+                        <div class="assignment-info">
+                            <div class="assignment-title">${item.subject}</div>
+                            <div class="assignment-subject">${item.location}</div>
+                        </div>
+                        <div class="assignment-status">${item.time}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            sidebar.classList.toggle('visible');
+            mainContent.classList.toggle('sidebar-visible');
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('userType');
+            window.location.href = '../index2.html';
+        }
+
+        // Update these functions in your existing JavaScript
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString();
+        }
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'present':
+                    return '<span class="attendance-badge present">Present</span>';
+                case 'absent':
+                    return '<span class="attendance-badge absent">Absent</span>';
+                case 'late':
+                    return '<span class="attendance-badge late">Late</span>';
+                default:
+                    return '<span class="attendance-badge not-marked">Not Marked</span>';
+            }
+        }
+
+        function pollAttendanceStatus() {
+            const studentId = localStorage.getItem('username');
+            
+            function updateAttendance() {
+                fetch(`http://localhost:5001/api/attendance/status?studentId=${studentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const statusContent = document.getElementById('attendance-status-content');
+                            statusContent.innerHTML = data.schedule.map(classInfo => `
+                                <div class="class-schedule-item">
+                                    ${classInfo.current ? '<div class="current-class-indicator"></div>' : ''}
+                                    <div class="class-time">${classInfo.time}</div>
+                                    <div class="class-info">
+                                        <div class="class-subject">${classInfo.subject}</div>
+                                        <div class="class-code">${classInfo.code}</div>
+                                    </div>
+                                    ${getStatusBadge(classInfo.attendance.status)}
+                                </div>
+                            `).join('');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching attendance status:', error));
+            }
+
+            // Update immediately and then every minute
+            updateAttendance();
+            setInterval(updateAttendance, 60000);
+            
+            // Update current time every second
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        }
+
+        function initializePerformanceChart() {
+            // Sample data for the last 6 months
+            const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+            const studentGrades = [72, 75, 78, 80, 76, 78];
+            const classGrades = [68, 70, 72, 71, 70, 72];
+            const studentAttendance = [82, 85, 83, 87, 85, 85];
+            const classAttendance = [75, 74, 76, 75, 75, 75];
+
+            // Initialize Grades Chart
+            const gradesCtx = document.getElementById('grades-chart').getContext('2d');
+            new Chart(gradesCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Your Grades',
+                            data: studentGrades,
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Class Average',
+                            data: classGrades,
+                            borderColor: '#94a3b8',
+                            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 60,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize Attendance Chart
+            const attendanceCtx = document.getElementById('attendance-chart').getContext('2d');
+            new Chart(attendanceCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Your Attendance',
+                            data: studentAttendance,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Class Average',
+                            data: classAttendance,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 60,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

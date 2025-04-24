@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Faculty Students</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f8f9fd;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            height: 100vh;
+            padding: 20px;
+            color: #1a1f36;
+            position: fixed;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6366f1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 12px;
+            gap: 12px;
+            transition: all 0.3s;
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: #f1f5f9;
+            color: #6366f1;
+        }
+
+        .nav-item.active {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Student Management Styles */
+        .student-management {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .student-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .action-button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .primary-button {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        .secondary-button {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+
+        .action-button:hover {
+            opacity: 0.9;
+        }
+
+        /* Student Table */
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .student-table th {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .student-table td {
+            color: #1a1f36;
+        }
+
+        .student-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 10px 16px;
+            flex: 1;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            color: #1a1f36;
+        }
+
+        .filter-dropdown {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #1a1f36;
+            cursor: pointer;
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-info {
+            text-align: right;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .profile-role {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Student Info */
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .student-name {
+            font-weight: 500;
+        }
+
+        .student-id {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Student Profile Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .profile-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            margin-bottom: 12px;
+        }
+
+        .info-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            color: #1a1f36;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: #6366f1;
+        }
+
+        .attendance-chart {
+            height: 200px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .grade-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .grade-table th,
+        .grade-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .grade-table th {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .performance-comparison {
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .comparison-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .comparison-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .bar-label {
+            width: 100px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 20px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 0 12px;
+            position: relative;
+        }
+
+        .student-bar {
+            position: absolute;
+            height: 100%;
+            background: #6366f1;
+            border-radius: 4px;
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .class-bar {
+            position: absolute;
+            height: 100%;
+            background: #94a3b8;
+            border-radius: 4px;
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .bar-value {
+            width: 40px;
+            text-align: right;
+            font-size: 12px;
+            color: #1a1f36;
+            font-weight: 500;
+        }
+
+        .bar-legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .student-legend {
+            background: #6366f1;
+        }
+
+        .class-legend {
+            background: #94a3b8;
+        }
+
+        .performance-chart {
+            height: 300px;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .attendance-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            background-color: #6366f1;
+            color: white;
+        }
+
+        .attendance-btn:hover {
+            opacity: 0.9;
+        }
+
+        .attendance-btn.present {
+            background-color: #22c55e;
+        }
+
+        .attendance-btn.absent {
+            background-color: #ef4444;
+        }
+
+        .attendance-btn.not-marked {
+            background-color: #6366f1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <span class="material-icons">school</span>
+            CampusConnect
+        </div>
+        <a href="faculty-dashboard.html" class="nav-item">
+            <span class="material-icons">dashboard</span>
+            Dashboard
+        </a>
+        <a href="faculty-courses.html" class="nav-item">
+            <span class="material-icons">menu_book</span>
+            Courses
+        </a>
+        <a href="faculty-students.html" class="nav-item active">
+            <span class="material-icons">people</span>
+            Students
+        </a>
+        <a href="faculty-assignments.html" class="nav-item">
+            <span class="material-icons">assignment</span>
+            Assignments
+        </a>
+        <a href="faculty-grades.html" class="nav-item">
+            <span class="material-icons">grade</span>
+            Grades
+        </a>
+        <a href="faculty-schedule.html" class="nav-item">
+            <span class="material-icons">schedule</span>
+            Schedule
+        </a>
+        <a href="faculty-settings.html" class="nav-item">
+            <span class="material-icons">settings</span>
+            Settings
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="search-filter">
+                <div class="search-bar">
+                    <span class="material-icons">search</span>
+                    <input type="text" id="searchInput" placeholder="Search students..." onkeyup="filterStudents()">
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <div class="profile-name" id="username-display"></div>
+                    <div class="profile-role" id="faculty-id"></div>
+                </div>
+                <div class="avatar" id="avatar-display"></div>
+            </div>
+        </div>
+
+        <!-- Student Management -->
+        <div class="student-management">
+            <div class="student-section">
+                <div class="section-header">
+                    <div class="section-title">Student Management</div>
+                </div>
+                <table class="student-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>ID</th>
+                            <th>Course</th>
+                            <th>Section</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Student rows will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Student Profile Modal -->
+        <div class="modal" id="studentProfileModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Student Profile</div>
+                    <button class="close-modal" onclick="closeStudentProfileModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="profile-grid">
+                        <div class="profile-section">
+                            <div class="section-title">Personal Information</div>
+                            <div class="info-item">
+                                <div class="info-label">Name</div>
+                                <div class="info-value" id="profile-name"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Student ID</div>
+                                <div class="info-value" id="profile-id"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Course</div>
+                                <div class="info-value" id="profile-course"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email</div>
+                                <div class="info-value" id="profile-email"></div>
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <div class="section-title">Academic Performance</div>
+                            <div class="info-item">
+                                <div class="info-label">Overall Attendance</div>
+                                <div class="info-value" id="profile-attendance"></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="attendance-progress"></div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Average Grade</div>
+                                <div class="info-value" id="profile-grade"></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="grade-progress"></div>
+                                </div>
+                            </div>
+                            <div class="performance-comparison">
+                                <div class="comparison-title">Performance Comparison</div>
+                                <div class="comparison-bar">
+                                    <div class="bar-label">Attendance</div>
+                                    <div class="bar-container">
+                                        <div class="student-bar" id="attendance-comparison-student"></div>
+                                        <div class="class-bar" id="attendance-comparison-class"></div>
+                                    </div>
+                                    <div class="bar-value" id="attendance-value"></div>
+                                </div>
+                                <div class="comparison-bar">
+                                    <div class="bar-label">Grades</div>
+                                    <div class="bar-container">
+                                        <div class="student-bar" id="grade-comparison-student"></div>
+                                        <div class="class-bar" id="grade-comparison-class"></div>
+                                    </div>
+                                    <div class="bar-value" id="grade-value"></div>
+                                </div>
+                                <div class="bar-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-color student-legend"></div>
+                                        <span>Student</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color class-legend"></div>
+                                        <span>Class Average</span>
+                                    </div>
+                                </div>
+                                <div class="performance-chart">
+                                    <canvas id="performance-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <div class="section-title">Attendance History</div>
+                            <div class="attendance-chart" id="attendance-chart">
+                                <!-- Chart will be rendered here -->
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <div class="section-title">Recent Grades</div>
+                            <table class="grade-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Grade</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="grade-history">
+                                    <!-- Grades will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../credentials.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/click-spark.js"></script>
+    <script>
+        // Initialize page
+        window.onload = function() {
+            const username = localStorage.getItem('username');
+            const userType = localStorage.getItem('userType');
+            
+            if (!username || userType !== 'faculty') {
+                window.location.href = 'index2.html';
+                return;
+            }
+
+            // Display user information
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('faculty-id').textContent = `Faculty ID: ${username}`;
+            document.getElementById('avatar-display').textContent = username.substring(0, 2).toUpperCase();
+
+            // Load students
+            loadStudents();
+        };
+
+        let performanceChart = null;
+
+        function fetchStudents() {
+            // Get students from credentials
+            const students = Object.entries(studentCredentials).map(([id, data]) => ({
+                name: data.name,
+                id: id,
+                course: "CSBS",
+                status: "active"
+            }));
+
+            const tableBody = document.getElementById('studentTableBody');
+            tableBody.innerHTML = '';
+
+            students.forEach(student => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <div class="student-avatar">${student.name.substring(0, 2).toUpperCase()}</div>
+                                <div>
+                                    <div class="student-name">${student.name}</div>
+                                    <div class="student-id">${student.id}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${student.id}</td>
+                        <td>${student.course}</td>
+                        <td>
+                            <button class="action-button secondary-button" onclick="viewStudentProfile('${student.id}')">
+                                <span class="material-icons" style="font-size: 18px;">visibility</span>
+                                View Details
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function viewStudentProfile(studentId) {
+            const student = studentCredentials[studentId];
+            if (!student) return;
+
+            // Set basic information
+            document.getElementById('profile-name').textContent = student.name;
+            document.getElementById('profile-id').textContent = studentId;
+            document.getElementById('profile-course').textContent = "CSBS";
+            document.getElementById('profile-email').textContent = `${studentId}@example.com`;
+
+            // Set attendance (sample data)
+            const attendance = 85;
+            document.getElementById('profile-attendance').textContent = `${attendance}%`;
+            document.getElementById('attendance-progress').style.width = `${attendance}%`;
+
+            // Set average grade (sample data)
+            const averageGrade = 78;
+            document.getElementById('profile-grade').textContent = `${averageGrade}%`;
+            document.getElementById('grade-progress').style.width = `${averageGrade}%`;
+
+            // Set comparison data (sample data)
+            const classAverageAttendance = 75;
+            const classAverageGrade = 72;
+
+            // Update comparison bars
+            document.getElementById('attendance-comparison-student').style.width = `${attendance}%`;
+            document.getElementById('attendance-comparison-class').style.width = `${classAverageAttendance}%`;
+            document.getElementById('attendance-value').textContent = `${attendance}%`;
+
+            document.getElementById('grade-comparison-student').style.width = `${averageGrade}%`;
+            document.getElementById('grade-comparison-class').style.width = `${classAverageGrade}%`;
+            document.getElementById('grade-value').textContent = `${averageGrade}%`;
+
+            // Create performance trend chart
+            const ctx = document.getElementById('performance-chart').getContext('2d');
+            
+            // Sample data for the last 6 months
+            const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+            const studentGrades = [72, 75, 78, 80, 76, 78];
+            const classGrades = [68, 70, 72, 71, 70, 72];
+            const studentAttendance = [82, 85, 83, 87, 85, 85];
+            const classAttendance = [75, 74, 76, 75, 75, 75];
+
+            // Destroy existing chart if it exists
+            if (performanceChart) {
+                performanceChart.destroy();
+            }
+
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Student Grades',
+                            data: studentGrades,
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Class Average Grades',
+                            data: classGrades,
+                            borderColor: '#94a3b8',
+                            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Student Attendance',
+                            data: studentAttendance,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Class Average Attendance',
+                            data: classAttendance,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance Trend (Last 6 Months)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 60,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Populate grade history (sample data)
+            const gradeHistory = [
+                { subject: "Data Structures", grade: "A", date: "2024-03-15" },
+                { subject: "Operating Systems", grade: "B+", date: "2024-03-10" },
+                { subject: "Database Systems", grade: "A-", date: "2024-03-05" }
+            ];
+
+            const gradeHistoryBody = document.getElementById('grade-history');
+            gradeHistoryBody.innerHTML = gradeHistory.map(grade => `
+                <tr>
+                    <td>${grade.subject}</td>
+                    <td>${grade.grade}</td>
+                    <td>${grade.date}</td>
+                </tr>
+            `).join('');
+
+            // Show modal
+            document.getElementById('studentProfileModal').style.display = 'flex';
+        }
+
+        function closeStudentProfileModal() {
+            document.getElementById('studentProfileModal').style.display = 'none';
+        }
+
+        // Function to create student avatar
+        function createStudentAvatar(name) {
+            const initials = name.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase();
+            return `<div class="student-avatar">${initials}</div>`;
+        }
+
+        // Function to filter students based on search input
+        function filterStudents() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const tableBody = document.getElementById('studentTableBody');
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const studentName = row.getElementsByTagName('td')[0].textContent.toLowerCase();
+                const studentId = row.getElementsByTagName('td')[1].textContent.toLowerCase();
+                const course = row.getElementsByTagName('td')[2].textContent.toLowerCase();
+
+                if (studentName.includes(searchInput) || 
+                    studentId.includes(searchInput) || 
+                    course.includes(searchInput)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+
+        // Function to load and display students
+        function loadStudents() {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = ''; // Clear existing content
+
+            // Get all students from credentials
+            const students = Object.values(studentCredentials)
+                .filter(student => student.role === 'student')
+                .sort((a, b) => a.username.localeCompare(b.username));
+
+            // Add each student to the table
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="student-info">
+                            <div class="student-avatar">${student.name.substring(0, 2).toUpperCase()}</div>
+                            <div>
+                                <div class="student-name">${student.name}</div>
+                                <div class="student-id">${student.username}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${student.username}</td>
+                    <td>CSBS</td>
+                    <td>
+                        <button class="action-button secondary-button" onclick="viewStudentProfile('${student.username}')">
+                            <span class="material-icons" style="font-size: 18px;">visibility</span>
+                            View Details
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html> 

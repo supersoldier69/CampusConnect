@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Faculty Assignments</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f8f9fd;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            height: 100vh;
+            padding: 20px;
+            color: #1a1f36;
+            position: fixed;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6366f1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 12px;
+            gap: 12px;
+            transition: all 0.3s;
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: #f1f5f9;
+            color: #6366f1;
+        }
+
+        .nav-item.active {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Assignment Management Styles */
+        .assignment-management {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .assignment-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .action-button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .primary-button {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        .secondary-button {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+
+        .action-button:hover {
+            opacity: 0.9;
+        }
+
+        /* Assignment Table */
+        .assignment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .assignment-table th,
+        .assignment-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .assignment-table th {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .assignment-table td {
+            color: #1a1f36;
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 10px 16px;
+            flex: 1;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            color: #1a1f36;
+        }
+
+        .filter-dropdown {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #1a1f36;
+            cursor: pointer;
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-info {
+            text-align: right;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .profile-role {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Assignment Info */
+        .assignment-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .assignment-title {
+            font-weight: 500;
+        }
+
+        .assignment-course {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .due-date {
+            color: #ef4444;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .submission-count {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a1f36;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1a1f36;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #ecfdf5;
+            color: #059669;
+        }
+
+        .status-completed {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* Submissions View Styles */
+        .submission-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .student-id {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .submission-time {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .submission-content {
+            margin-bottom: 16px;
+        }
+
+        .attachments {
+            margin-top: 12px;
+        }
+
+        .attachments ul {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0;
+        }
+
+        .attachments li {
+            margin-bottom: 4px;
+        }
+
+        .attachments a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+
+        .attachments a:hover {
+            text-decoration: underline;
+        }
+
+        .submission-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .danger-button {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .danger-button:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <span class="material-icons">school</span>
+            CampusConnect
+        </div>
+        <a href="faculty-dashboard.html" class="nav-item">
+            <span class="material-icons">dashboard</span>
+            Dashboard
+        </a>
+        <a href="faculty-courses.html" class="nav-item">
+            <span class="material-icons">menu_book</span>
+            Courses
+        </a>
+        <a href="faculty-students.html" class="nav-item">
+            <span class="material-icons">people</span>
+            Students
+        </a>
+        <a href="faculty-assignments.html" class="nav-item active">
+            <span class="material-icons">assignment</span>
+            Assignments
+        </a>
+        <a href="faculty-grades.html" class="nav-item">
+            <span class="material-icons">grade</span>
+            Grades
+        </a>
+        <a href="faculty-schedule.html" class="nav-item">
+            <span class="material-icons">schedule</span>
+            Schedule
+        </a>
+        <a href="faculty-settings.html" class="nav-item">
+            <span class="material-icons">settings</span>
+            Settings
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="search-filter">
+                <div class="search-bar">
+                    <span class="material-icons">search</span>
+                    <input type="text" placeholder="Search assignments...">
+                </div>
+                <select class="filter-dropdown">
+                    <option value="all">All Assignments</option>
+                    <option value="active">Active</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <div class="profile-name" id="username-display"></div>
+                    <div class="profile-role" id="faculty-id"></div>
+                </div>
+                <div class="avatar" id="avatar-display"></div>
+            </div>
+        </div>
+
+        <!-- Assignment Management -->
+        <div class="assignment-management">
+            <div class="assignment-section">
+                <div class="section-header">
+                    <div class="section-title">Assignment Management</div>
+                    <button class="action-button primary-button" onclick="showCreateAssignmentModal()">
+                        <span class="material-icons" style="font-size: 18px; margin-right: 4px;">add</span>
+                        Create Assignment
+                    </button>
+                </div>
+                <table class="assignment-table">
+                    <thead>
+                        <tr>
+                            <th>Assignment</th>
+                            <th>Due Date</th>
+                            <th>Submissions</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignments-table-body">
+                        <!-- Assignment rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Create Assignment Modal -->
+        <div class="modal" id="createAssignmentModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Create New Assignment</div>
+                    <button class="close-modal" onclick="closeCreateAssignmentModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="createAssignmentForm" onsubmit="createAssignment(event)">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="title" required placeholder="Enter assignment title">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <select name="subject" required>
+                                <option value="">Select Subject</option>
+                                <option value="CS101">Computational Statistics</option>
+                                <option value="DAA101">Design & Analysis of Algorithms</option>
+                                <option value="OS101">Operating Systems</option>
+                                <option value="EDA101">Python for EDA</option>
+                                <option value="PSE101">Software Engineering</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" required placeholder="Enter assignment description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" name="dueDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Attachments</label>
+                            <input type="file" name="attachments" multiple>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="action-button secondary-button" onclick="closeCreateAssignmentModal()">Cancel</button>
+                            <button type="submit" class="action-button primary-button">Create Assignment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Assignment Modal -->
+        <div class="modal" id="editAssignmentModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Edit Assignment</div>
+                    <button class="close-modal" onclick="closeEditAssignmentModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAssignmentForm" onsubmit="updateAssignment(event)">
+                        <input type="hidden" name="assignmentId" id="editAssignmentId">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="title" id="editTitle" required placeholder="Enter assignment title">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <select name="subject" id="editSubject" required>
+                                <option value="">Select Subject</option>
+                                <option value="CS101">Computational Statistics</option>
+                                <option value="DAA101">Design & Analysis of Algorithms</option>
+                                <option value="OS101">Operating Systems</option>
+                                <option value="EDA101">Python for EDA</option>
+                                <option value="PSE101">Software Engineering</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" id="editDescription" required placeholder="Enter assignment description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" name="dueDate" id="editDueDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Attachments</label>
+                            <input type="file" name="attachments" multiple>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="action-button secondary-button" onclick="closeEditAssignmentModal()">Cancel</button>
+                            <button type="submit" class="action-button primary-button">Update Assignment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Submissions Modal -->
+        <div class="modal" id="viewSubmissionsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Assignment Submissions</div>
+                    <button class="close-modal" onclick="closeViewSubmissionsModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="submissions-list" id="submissionsList">
+                        <!-- Submissions will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal" id="deleteConfirmationModal">
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-header">
+                    <div class="modal-title">Confirm Deletion</div>
+                    <button class="close-modal" onclick="closeDeleteConfirmationModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this assignment? This action cannot be undone.</p>
+                    <div class="modal-footer" style="margin-top: 20px;">
+                        <button type="button" class="action-button secondary-button" onclick="closeDeleteConfirmationModal()">Cancel</button>
+                        <button type="button" class="action-button danger-button" onclick="deleteAssignment()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../credentials.js"></script>
+    <script src="assets/js/click-spark.js"></script>
+    <script>
+        // Initialize page
+        window.onload = function() {
+            const username = localStorage.getItem('username');
+            const userType = localStorage.getItem('userType');
+            
+            if (!username || userType !== 'faculty') {
+                window.location.href = 'index2.html';
+                return;
+            }
+
+            // Get faculty details
+            const faculty = facultyCredentials[username];
+            if (!faculty) {
+                window.location.href = 'index2.html';
+                return;
+            }
+
+            // Display user information
+            document.getElementById('username-display').textContent = faculty.name;
+            document.getElementById('faculty-id').textContent = `Faculty ID: ${faculty.username}`;
+            document.getElementById('avatar-display').textContent = faculty.name.substring(0, 2).toUpperCase();
+
+            // Fetch and populate assignments
+            fetchAssignments();
+        };
+
+        function fetchAssignments() {
+            const facultyId = localStorage.getItem('username');
+            
+            // Try to get assignments from localStorage first
+            let assignments = JSON.parse(localStorage.getItem('facultyAssignments') || '[]');
+            
+            // If no assignments in localStorage, use sample data
+            if (assignments.length === 0) {
+                assignments = getSampleAssignments();
+                localStorage.setItem('facultyAssignments', JSON.stringify(assignments));
+            }
+            
+            populateAssignments(assignments);
+        }
+
+        function populateAssignments(assignments) {
+            const tableBody = document.getElementById('assignments-table-body');
+            tableBody.innerHTML = '';
+
+            // Store assignments in localStorage for persistence
+            localStorage.setItem('facultyAssignments', JSON.stringify(assignments));
+
+            assignments.forEach(assignment => {
+                const dueDate = new Date(assignment.dueDate);
+                const today = new Date();
+                const status = dueDate < today ? 'completed' : 'active';
+                
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="assignment-info">
+                                <div class="assignment-title">${assignment.title}</div>
+                                <div class="assignment-course">${assignment.subject}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="due-date">${assignment.dueDate}</div>
+                        </td>
+                        <td>
+                            <div class="submission-count">${assignment.submissions || 0} submissions</div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-${status}">
+                                ${status.charAt(0).toUpperCase() + status.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="action-button secondary-button" onclick="viewSubmissions('${assignment.id}')" style="margin-right: 8px;">
+                                <span class="material-icons" style="font-size: 18px;">visibility</span>
+                            </button>
+                            <button class="action-button secondary-button" onclick="editAssignment('${assignment.id}')" style="margin-right: 8px;">
+                                <span class="material-icons" style="font-size: 18px;">edit</span>
+                            </button>
+                            <button class="action-button danger-button" onclick="confirmDeleteAssignment('${assignment.id}')">
+                                <span class="material-icons" style="font-size: 18px;">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function getSampleAssignments() {
+            return [
+                {
+                    id: '1',
+                    title: 'Data Analysis Project',
+                    subject: 'Python for EDA',
+                    dueDate: '2025-03-15',
+                    submissions: 45
+                },
+                {
+                    id: '2',
+                    title: 'Process Scheduling Implementation',
+                    subject: 'Operating Systems',
+                    dueDate: '2025-03-20',
+                    submissions: 45
+                },
+                {
+                    id: '3',
+                    title: 'Algorithm Analysis Report',
+                    subject: 'Design & Analysis of Algorithms',
+                    dueDate: '2025-03-25',
+                    submissions: 45
+                }
+            ];
+        }
+
+        function viewSubmissions(assignmentId) {
+            // Get submissions from localStorage
+            const submissions = JSON.parse(localStorage.getItem('assignmentSubmissions') || '[]');
+            
+            // Filter submissions for this assignment
+            const assignmentSubmissions = submissions.filter(sub => sub.assignmentId === assignmentId);
+            
+            if (assignmentSubmissions.length === 0) {
+                document.getElementById('submissionsList').innerHTML = '<p>No submissions yet.</p>';
+            } else {
+                populateSubmissions(assignmentSubmissions);
+            }
+            
+            document.getElementById('viewSubmissionsModal').style.display = 'flex';
+        }
+
+        function closeViewSubmissionsModal() {
+            document.getElementById('viewSubmissionsModal').style.display = 'none';
+        }
+
+        function populateSubmissions(submissions) {
+            const submissionsList = document.getElementById('submissionsList');
+            submissionsList.innerHTML = '';
+
+            submissions.forEach(submission => {
+                const submissionElement = document.createElement('div');
+                submissionElement.className = 'submission-item';
+                submissionElement.innerHTML = `
+                    <div class="submission-header">
+                        <div class="student-info">
+                            <span class="student-name">${submission.studentName}</span>
+                            <span class="student-id">${submission.studentId}</span>
+                        </div>
+                        <div class="submission-time">${new Date(submission.submittedAt).toLocaleString()}</div>
+                    </div>
+                    <div class="submission-content">
+                        <p>${submission.comments || 'No comments provided'}</p>
+                        ${submission.files && submission.files.length > 0 ? `
+                            <div class="attachments">
+                                <strong>Attachments:</strong>
+                                <ul>
+                                    ${submission.files.map(file => `
+                                        <li>${file.name} (${formatFileSize(file.size)})</li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="submission-actions">
+                        <button class="action-button primary-button" onclick="gradeSubmission('${submission.id}')">
+                            Grade Submission
+                        </button>
+                    </div>
+                `;
+                submissionsList.appendChild(submissionElement);
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function gradeSubmission(submissionId) {
+            const grade = prompt('Enter grade (0-100):');
+            if (grade === null) return;
+            
+            const gradeValue = parseInt(grade);
+            if (isNaN(gradeValue) || gradeValue < 0 || gradeValue > 100) {
+                alert('Please enter a valid grade between 0 and 100');
+                return;
+            }
+
+            // Get submissions from localStorage
+            let submissions = JSON.parse(localStorage.getItem('assignmentSubmissions') || '[]');
+            
+            // Update the grade for this submission
+            const submissionIndex = submissions.findIndex(sub => sub.id === submissionId);
+            if (submissionIndex !== -1) {
+                const submission = submissions[submissionIndex];
+                submission.grade = gradeValue;
+
+                // Store the grade in a separate grades storage
+                let grades = JSON.parse(localStorage.getItem('studentGrades') || '[]');
+                
+                // Remove any existing grade for this assignment and student
+                grades = grades.filter(g => 
+                    !(g.assignmentId === submission.assignmentId && g.studentId === submission.studentId)
+                );
+
+                // Add the new grade
+                grades.push({
+                    id: Date.now().toString(),
+                    studentId: submission.studentId,
+                    studentName: submission.studentName,
+                    assignmentId: submission.assignmentId,
+                    assignmentTitle: submission.assignmentTitle,
+                    subject: getSubjectFromAssignment(submission.assignmentId),
+                    type: 'Assignment',
+                    term: 'Current',
+                    marks: gradeValue,
+                    maxMarks: 100,
+                    status: 'Graded',
+                    gradedAt: new Date().toISOString()
+                });
+
+                // Update both storages
+                localStorage.setItem('assignmentSubmissions', JSON.stringify(submissions));
+                localStorage.setItem('studentGrades', JSON.stringify(grades));
+                
+                alert(`Grade ${gradeValue} submitted successfully!`);
+                populateSubmissions(submissions.filter(sub => sub.assignmentId === submission.assignmentId));
+            }
+        }
+
+        function getSubjectFromAssignment(assignmentId) {
+            const assignments = JSON.parse(localStorage.getItem('facultyAssignments') || '[]');
+            const assignment = assignments.find(a => a.id === assignmentId);
+            return assignment ? assignment.subject : 'Unknown';
+        }
+
+        function editAssignment(assignmentId) {
+            // For now, we'll use the sample data since we don't have a backend
+            const assignment = getSampleAssignments().find(a => a.id === assignmentId);
+            if (assignment) {
+                // Populate form fields
+                document.getElementById('editAssignmentId').value = assignment.id;
+                document.getElementById('editTitle').value = assignment.title;
+                document.getElementById('editSubject').value = assignment.subject;
+                document.getElementById('editDescription').value = assignment.description || '';
+                document.getElementById('editDueDate').value = assignment.dueDate;
+                
+                // Show modal
+                document.getElementById('editAssignmentModal').style.display = 'flex';
+            } else {
+                alert('Assignment not found');
+            }
+        }
+
+        function closeEditAssignmentModal() {
+            document.getElementById('editAssignmentModal').style.display = 'none';
+        }
+
+        function updateAssignment(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const assignmentId = formData.get('assignmentId');
+            
+            // Convert form data to JSON
+            const assignmentData = {
+                title: formData.get('title'),
+                subject: formData.get('subject'),
+                description: formData.get('description'),
+                dueDate: formData.get('dueDate'),
+                attachments: Array.from(formData.getAll('attachments')).map(file => file.name)
+            };
+
+            // In a real implementation, this would send to the server
+            alert('Assignment updated successfully!');
+            closeEditAssignmentModal();
+            form.reset();
+            fetchAssignments(); // Refresh the assignments list
+        }
+
+        function showCreateAssignmentModal() {
+            console.log('Opening create assignment modal');
+            const modal = document.getElementById('createAssignmentModal');
+            console.log('Modal element:', modal);
+            modal.style.display = 'flex';
+            console.log('Modal display style set to flex');
+        }
+
+        function closeCreateAssignmentModal() {
+            console.log('Closing create assignment modal');
+            const modal = document.getElementById('createAssignmentModal');
+            modal.style.display = 'none';
+            document.getElementById('createAssignmentForm').reset();
+        }
+
+        function createAssignment(event) {
+            console.log('Creating assignment');
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const username = localStorage.getItem('username');
+            
+            console.log('Form data:', {
+                title: formData.get('title'),
+                subject: formData.get('subject'),
+                description: formData.get('description'),
+                dueDate: formData.get('dueDate')
+            });
+            
+            // Get faculty details
+            const faculty = facultyCredentials[username];
+            if (!faculty) {
+                alert('Faculty credentials not found. Please log in again.');
+                window.location.href = 'index2.html';
+                return;
+            }
+            
+            // Convert form data to JSON
+            const assignmentData = {
+                id: Date.now().toString(), // Generate a unique ID
+                title: formData.get('title'),
+                subject: formData.get('subject'),
+                description: formData.get('description'),
+                dueDate: formData.get('dueDate'),
+                instructor: faculty.name,
+                attachments: Array.from(formData.getAll('attachments')).map(file => file.name),
+                submissions: 0,
+                createdBy: username
+            };
+
+            console.log('New assignment data:', assignmentData);
+
+            // Get current assignments from localStorage
+            let assignments = JSON.parse(localStorage.getItem('facultyAssignments') || '[]');
+            
+            // Add new assignment
+            assignments.push(assignmentData);
+            
+            // Update localStorage
+            localStorage.setItem('facultyAssignments', JSON.stringify(assignments));
+            
+            alert('Assignment created successfully!');
+            closeCreateAssignmentModal();
+            form.reset();
+            
+            // Refresh the assignments list
+            fetchAssignments();
+        }
+
+        let assignmentToDelete = null;
+
+        function confirmDeleteAssignment(assignmentId) {
+            assignmentToDelete = assignmentId;
+            document.getElementById('deleteConfirmationModal').style.display = 'flex';
+        }
+
+        function closeDeleteConfirmationModal() {
+            assignmentToDelete = null;
+            document.getElementById('deleteConfirmationModal').style.display = 'none';
+        }
+
+        function deleteAssignment() {
+            if (!assignmentToDelete) return;
+
+            // Get current assignments from localStorage
+            let assignments = JSON.parse(localStorage.getItem('facultyAssignments') || '[]');
+            
+            // Remove the assignment
+            assignments = assignments.filter(assignment => assignment.id !== assignmentToDelete);
+            
+            // Update localStorage
+            localStorage.setItem('facultyAssignments', JSON.stringify(assignments));
+            
+            alert('Assignment deleted successfully!');
+            closeDeleteConfirmationModal();
+            populateAssignments(assignments); // Refresh the table with updated assignments
+        }
+    </script>
+</body>
+</html> 
